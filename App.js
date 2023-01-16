@@ -1,14 +1,39 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, StatusBar } from "react-native";
+
+import "react-native-gesture-handler";
 
 import { NavigationContainer } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+
 import MainNavigationStack from "./memas/navigation/MainNavigationStack";
+import { useCallback } from "react";
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("./memas/assets/fonts/Roboto/Roboto-Regular.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      // await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <NavigationContainer>
-      <MainNavigationStack />
-    </NavigationContainer>
+    <SafeAreaView
+      style={{ flex: 1, fontFamily: "Roboto-Regular" }}
+      onLayout={onLayoutRootView}
+    >
+      <StatusBar backgroundColor="#000" />
+
+      <NavigationContainer>
+        <MainNavigationStack />
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 

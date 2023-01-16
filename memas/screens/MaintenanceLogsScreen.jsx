@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 
-export default function HomeScreen() {
+export default function MaintenanceLogsScreen() {
   return (
     <View style={styles}>
       <Text>Maintenance Logs Screen</Text>
