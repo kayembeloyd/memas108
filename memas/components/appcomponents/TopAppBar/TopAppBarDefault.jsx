@@ -2,14 +2,19 @@ import React from "react";
 import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import Icons from "../../../assets/icons/Icons";
 
-export default function TopAppBarDefault({ navigation, title, back }) {
+export default function TopAppBarDefault({
+  navigation,
+  title,
+  back,
+  profileOnPress,
+}) {
   return (
     <View
       style={{
         height: 48,
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#D9DDFF",
+        backgroundColor: "#4CAF50",
       }}
     >
       <TouchableOpacity
@@ -32,7 +37,9 @@ export default function TopAppBarDefault({ navigation, title, back }) {
         <Text style={{ fontSize: 18, fontWeight: "500" }}>{title}</Text>
       </View>
 
-      <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+      <TouchableOpacity onPress={profileOnPress}>
+        <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+      </TouchableOpacity>
     </View>
   );
 }
