@@ -14,14 +14,14 @@ import Icons from "../../assets/icons/Icons";
 export default function ScanBottomSheet() {
   const [isSheetVisible, setSheetVisibility] = useState(false);
 
-  const { height, width, scale, fontScale } = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const sheetAnim = useRef(new Animated.Value(42)).current;
 
   const openSheet = () => {
     Animated.timing(sheetAnim, {
       toValue:
         height -
-        ((Platform.OS === "android") | (Platform.OS === "ios") ? 48 + 24 : 48),
+        ((Platform.OS === "android") | (Platform.OS === "ios") ? 50 + 24 : 50),
       duration: 100,
       easing: Easing.ease,
       useNativeDriver: false,

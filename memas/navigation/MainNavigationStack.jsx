@@ -44,16 +44,7 @@ export default function MainNavigationStack({ navigation }) {
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          header: ({ navigation, route, options, back }) => {
-            const title = getHeaderTitle(options, route.name);
-            return (
-              <TopAppBarMainCentered
-                title={title}
-                back={back}
-                navigation={navigation}
-              />
-            );
-          },
+          header: () => <TopAppBarMainCentered />,
         }}
       />
       <stackNavigator.Screen name="AboutScreen" component={AboutScreen} />
@@ -93,6 +84,18 @@ export default function MainNavigationStack({ navigation }) {
       <stackNavigator.Screen
         name="MaintenanceLogsScreen"
         component={MaintenanceLogsScreen}
+        options={{
+          header: ({ navigation, route, options, back }) => {
+            const title = getHeaderTitle(options, route.name);
+            return (
+              <TopAppBarWithSearchbar
+                title={title}
+                back={back}
+                navigation={navigation}
+              />
+            );
+          },
+        }}
       />
       <stackNavigator.Screen
         name="MaintenanceScheduleScreen"

@@ -25,10 +25,14 @@ export default function App() {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, fontFamily: "Roboto-Regular" }}
+      style={{
+        flex: 1,
+        fontFamily: "Roboto-Regular",
+        backgroundColor: "white",
+      }}
       onLayout={onLayoutRootView}
     >
-      <StatusBar backgroundColor="#000" />
+      <StatusBar backgroundColor="#388E3C" />
 
       <NavigationContainer>
         <MainNavigationStack />

@@ -1,12 +1,50 @@
-import React, { useCallback, useRef, useMemo } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, ScrollView, Alert } from "react-native";
 
+import { getHeaderTitle } from "@react-navigation/elements";
 import ScanBottomSheet from "../components/appcomponents/ScanBottomSheet";
 import MainNavigationButton from "../components/uicomponents/MainNavigationButton";
+import TopAppBarMainCentered from "../components/appcomponents/TopAppBar/TopAppBarMainCentered";
+import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 
 export default function HomeScreen({ navigation }) {
+  const [profileModalVisibility, setProfileModalVisibility] = useState(false);
+
+  useEffect(() => {
+    return navigation.addListener("focus", () => {
+      setProfileModalVisibility(false);
+
+      navigation.setOptions({
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name);
+          return (
+            <TopAppBarMainCentered
+              title={title}
+              back={back}
+              navigation={navigation}
+              profileOnPress={() => {
+                setProfileModalVisibility(true);
+              }}
+            />
+          );
+        },
+      });
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
+      <ProfileModalScreen
+        visible={profileModalVisibility}
+        onRequestClose={() => {
+          setProfileModalVisibility(false);
+        }}
+        onAddEquipmentPress={() => {
+          setProfileModalVisibility(false);
+          navigation.navigate("AddEquipmentScreen");
+        }}
+      />
+
       <ScrollView>
         <View
           style={{

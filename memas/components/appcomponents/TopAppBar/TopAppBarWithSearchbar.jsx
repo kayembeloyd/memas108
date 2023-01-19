@@ -9,7 +9,12 @@ import {
 } from "react-native";
 import Icons from "../../../assets/icons/Icons";
 
-export default function TopAppBarWithSearchbar({ navigation, title, back }) {
+export default function TopAppBarWithSearchbar({
+  navigation,
+  title,
+  back,
+  profileOnPress,
+}) {
   return (
     <View
       style={{
@@ -17,7 +22,7 @@ export default function TopAppBarWithSearchbar({ navigation, title, back }) {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#D9DDFF",
+        backgroundColor: "#4CAF50",
         paddingHorizontal: 10,
         paddingVertical: 3,
       }}
@@ -53,6 +58,10 @@ export default function TopAppBarWithSearchbar({ navigation, title, back }) {
             flex: 1,
           }}
         />
+
+        <TouchableOpacity onPress={profileOnPress}>
+          <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+        </TouchableOpacity>
       </View>
     </View>
   );

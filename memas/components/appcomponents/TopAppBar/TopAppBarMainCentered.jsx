@@ -2,39 +2,36 @@ import React from "react";
 import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import Icons from "../../../assets/icons/Icons";
 
-export default function TopAppBarMainCentered({ navigation, title, back }) {
+export default function TopAppBarMainCentered({
+  navigation,
+  title,
+  back,
+  profileOnPress,
+}) {
   return (
     <View
       style={{
         height: 48,
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: "#D9DDFF",
+        backgroundColor: "#4CAF50",
       }}
     >
-      <TouchableOpacity
-        onPress={() => {
-          back ? navigation.goBack() : null;
-        }}
-      >
-        <Icons
-          name={back ? "back" : "menu"}
-          style={styles.topAppBarIconStyles}
-        />
-      </TouchableOpacity>
-
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "flex-start",
+          paddingStart: 20,
           height: 48,
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "500" }}>{title}</Text>
       </View>
 
-      <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+      <TouchableOpacity onPress={profileOnPress}>
+        <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+      </TouchableOpacity>
     </View>
   );
 }
