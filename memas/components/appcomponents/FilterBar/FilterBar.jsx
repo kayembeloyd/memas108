@@ -8,7 +8,7 @@ export default function FilterBar({ style, children }) {
         style,
         {
           height: 50,
-          backgroundColor: "blue",
+          backgroundColor: "#4CAF50",
           flexDirection: "row",
           flex: 1,
           alignItems: "center",
@@ -16,7 +16,9 @@ export default function FilterBar({ style, children }) {
         },
       ]}
     >
-      <ScrollView horizontal>{children}</ScrollView>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {children}
+      </ScrollView>
     </View>
   );
 }

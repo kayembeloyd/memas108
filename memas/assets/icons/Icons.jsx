@@ -32,7 +32,23 @@ const getIcon = (name) => {
             fillRule="evenodd"
             clipRule="evenodd"
             d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0Zm6.36 14.83c-1.43-1.74-4.9-2.33-6.36-2.33s-4.93.59-6.36 2.33A7.95 7.95 0 0 1 2 10c0-4.41 3.59-8 8-8s8 3.59 8 8c0 1.82-.62 3.49-1.64 4.83ZM6.5 7.5C6.5 5.56 8.06 4 10 4s3.5 1.56 3.5 3.5S11.94 11 10 11 6.5 9.44 6.5 7.5Z"
-            fill="#000"
+            fill="#fff"
+          />
+        </Svg>
+      );
+    case "profile-dark":
+      return (
+        <Svg
+          width={20}
+          height={20}
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <Path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0Zm6.36 14.83c-1.43-1.74-4.9-2.33-6.36-2.33s-4.93.59-6.36 2.33A7.95 7.95 0 0 1 2 10c0-4.41 3.59-8 8-8s8 3.59 8 8c0 1.82-.62 3.49-1.64 4.83ZM6.5 7.5C6.5 5.56 8.06 4 10 4s3.5 1.56 3.5 3.5S11.94 11 10 11 6.5 9.44 6.5 7.5Z"
+            fill="#666666"
           />
         </Svg>
       );
@@ -44,7 +60,7 @@ const getIcon = (name) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <Rect opacity={0.4} width={32} height={4} rx={2} fill="#79747E" />
+          <Rect opacity={0.6} width={32} height={4} rx={2} fill="#fff" />
         </Svg>
       );
     case "back":
@@ -57,7 +73,21 @@ const getIcon = (name) => {
         >
           <Path
             d="M16 7H3.83l5.59-5.59L8 0 0 8l8 8 1.41-1.41L3.83 9H16V7Z"
-            fill="#000"
+            fill="#666666"
+          />
+        </Svg>
+      );
+    case "back-light":
+      return (
+        <Svg
+          width={16}
+          height={16}
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <Path
+            d="M16 7H3.83l5.59-5.59L8 0 0 8l8 8 1.41-1.41L3.83 9H16V7Z"
+            fill="#fff"
           />
         </Svg>
       );

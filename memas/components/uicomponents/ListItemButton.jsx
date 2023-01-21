@@ -9,12 +9,11 @@ export default function ListItemButton({ style, text, onPress }) {
         {
           paddingHorizontal: 12,
           paddingVertical: 8,
-          backgroundColor: "red",
         },
       ]}
       onPress={onPress}
     >
-      <Text>{text}</Text>
+      <Text style={{ fontSize: 16 }}>{text}</Text>
     </TouchableOpacity>
   );
 }

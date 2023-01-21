@@ -26,7 +26,7 @@ export default function MaintenanceLogViewScreen({ navigation }) {
           const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarDefault
-              title={title}
+              title={"Maintenance Log #1234"}
               back={back}
               navigation={navigation}
               profileOnPress={() => {
@@ -42,7 +42,7 @@ export default function MaintenanceLogViewScreen({ navigation }) {
   return (
     <ScrollView
       style={{
-        backgroundColor: "yellow",
+        backgroundColor: "#fff",
         alignSelf: "center",
         width: "100%",
       }}
@@ -67,7 +67,6 @@ export default function MaintenanceLogViewScreen({ navigation }) {
         style={{
           width: "100%",
           maxWidth: 900,
-          backgroundColor: "green",
           marginBottom: 2,
           marginTop: 2,
         }}
@@ -83,14 +82,14 @@ export default function MaintenanceLogViewScreen({ navigation }) {
         <Text style={styles.item}>Model: VN-WS-08</Text>
       </View>
 
-      <View style={{ width: "100%", maxWidth: 900, marginVertical: 10 }}>
-        <Text>Maintenance Type:</Text>
-        <Text>Preventive maintenance</Text>
+      <View style={{ width: "100%", maxWidth: 900, marginVertical: 15 }}>
+        <Text style={{ fontSize: 18 }}>Maintenance Type:</Text>
+        <Text style={{ fontSize: 16 }}>Preventive maintenance</Text>
       </View>
 
       <View style={{ width: "100%", maxWidth: 900, marginVertical: 10 }}>
-        <Text>Description</Text>
-        <Text>
+        <Text style={{ fontSize: 18 }}>Description</Text>
+        <Text style={{ fontSize: 16 }}>
           General PPM, Replaced Sieve beds, Replaced filters, Replaced
           Compressor gaskets
         </Text>

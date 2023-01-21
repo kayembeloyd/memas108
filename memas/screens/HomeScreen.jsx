@@ -50,7 +50,6 @@ export default function HomeScreen({ navigation }) {
           style={{
             marginBottom: 60,
             flex: 1,
-            backgroundColor: "red",
             alignItems: "center",
           }}
         >
@@ -60,6 +59,7 @@ export default function HomeScreen({ navigation }) {
               onPress={() => {
                 navigation.navigate("EquipmentScreen");
               }}
+              image={"equipment"}
             />
           </View>
           <View style={styles.row}>
@@ -69,12 +69,14 @@ export default function HomeScreen({ navigation }) {
               onPress={() => {
                 navigation.navigate("AddMaintenanceLogScreen");
               }}
+              image={"preventive-maintenance"}
             />
             <MainNavigationButton
               text={"Corrective Maintenance"}
               onPress={() => {
                 navigation.navigate("AddMaintenanceLogScreen");
               }}
+              image={"corrective-maintenance"}
             />
           </View>
           <View style={styles.row}>
@@ -84,12 +86,14 @@ export default function HomeScreen({ navigation }) {
               onPress={() => {
                 navigation.navigate("MaintenanceLogsScreen");
               }}
+              image={"maintenance-logs"}
             />
             <MainNavigationButton
               text="Maintenance Schedule"
               onPress={() => {
                 navigation.navigate("MaintenanceScheduleScreen");
               }}
+              image={"maintenance-schedule"}
             />
           </View>
         </View>
@@ -99,7 +103,7 @@ export default function HomeScreen({ navigation }) {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "yellow",
+          backgroundColor: "transparent",
         }}
       >
         <ScanBottomSheet />
@@ -117,7 +121,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     marginVertical: 10,
-    backgroundColor: "green",
     width: "95%",
     maxWidth: 700,
   },

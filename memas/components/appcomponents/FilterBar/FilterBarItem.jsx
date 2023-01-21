@@ -1,17 +1,16 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function FilterBarItem({ title, value }) {
   return (
-    <View
+    <TouchableOpacity
       style={{
         marginHorizontal: 10,
         paddingHorizontal: 10,
-        backgroundColor: "grey",
       }}
     >
-      <Text style={{ fontWeight: "500" }}>{title}</Text>
-      <Text>{value}</Text>
-    </View>
+      <Text style={{ color: "#E6F1E7", fontWeight: "700" }}>{title}</Text>
+      <Text style={{ color: "#E6F1E7" }}>{value}</Text>
+    </TouchableOpacity>
   );
 }

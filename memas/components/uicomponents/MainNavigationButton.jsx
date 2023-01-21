@@ -1,7 +1,9 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 
-export default function MainNavigationButton({ style, text, onPress }) {
+import getImage from "../../assets/images/ImageLoader";
+
+export default function MainNavigationButton({ style, text, onPress, image }) {
   return (
     <TouchableOpacity onPress={onPress}>
       <View
@@ -9,17 +11,20 @@ export default function MainNavigationButton({ style, text, onPress }) {
           style,
           {
             width: 130,
-            backgroundColor: "grey",
             height: "100%",
           },
         ]}
       >
-        <View
-          style={{ height: 130, backgroundColor: "indigo", borderRadius: 10 }}
-        ></View>
-        <Text style={{ textAlign: "center", backgroundColor: "yellow" }}>
-          {text}
-        </Text>
+        <Image
+          source={getImage(image)}
+          style={{
+            height: 130,
+            width: 130,
+            backgroundColor: "indigo",
+            borderRadius: 10,
+          }}
+        ></Image>
+        <Text style={{ textAlign: "center", fontWeight: "500" }}>{text}</Text>
       </View>
     </TouchableOpacity>
   );

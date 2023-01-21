@@ -51,7 +51,7 @@ export default function ScanBottomSheet() {
       <View style={{}}>
         <TouchableOpacity
           style={{
-            backgroundColor: "blue",
+            backgroundColor: "#4CAF50",
             justifyContent: "center",
             alignItems: "center",
             borderTopLeftRadius: 20,
@@ -71,6 +71,7 @@ export default function ScanBottomSheet() {
                 textAlign: "center",
                 fontSize: 16,
                 fontWeight: "500",
+                color: "#fff",
               }}
             >
               Scan Equipment

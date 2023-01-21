@@ -7,7 +7,7 @@ export default function MaintenanceScheduleItem({ style, onPress }) {
       style={[
         style,
         {
-          backgroundColor: "green",
+          backgroundColor: "#AFDBB1",
           height: 68,
           marginBottom: 5,
           marginTop: 5,

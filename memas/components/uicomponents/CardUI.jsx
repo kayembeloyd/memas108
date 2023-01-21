@@ -9,7 +9,7 @@ export default function CardUI({ style, titleShown, title, children, center }) {
         {
           minWidth: 300,
           maxWidth: 900,
-          backgroundColor: "blue",
+          backgroundColor: "#EDF7ED",
           padding: 15,
         },
       ]}
@@ -22,7 +22,6 @@ export default function CardUI({ style, titleShown, title, children, center }) {
 
       <View
         style={{
-          backgroundColor: "green",
           width: "100%",
           alignItems: center ? "center" : "flex-start",
         }}

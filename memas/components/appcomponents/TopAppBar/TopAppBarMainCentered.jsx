@@ -26,7 +26,9 @@ export default function TopAppBarMainCentered({
           height: 48,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "500" }}>{title}</Text>
+        <Text style={{ color: "white", fontSize: 18, fontWeight: "500" }}>
+          {title}
+        </Text>
       </View>
 
       <TouchableOpacity onPress={profileOnPress}>

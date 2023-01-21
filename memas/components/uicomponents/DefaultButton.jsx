@@ -5,6 +5,7 @@ export default function DefaultButton({
   style,
   onPress,
   backgroundColor,
+  color,
   text,
 }) {
   return (
@@ -18,7 +19,15 @@ export default function DefaultButton({
           },
         ]}
       >
-        <Text style={{ fontSize: 15, textAlign: "center" }}>{text}</Text>
+        <Text
+          style={{
+            fontSize: 15,
+            textAlign: "center",
+            color: color === undefined ? "black" : color,
+          }}
+        >
+          {text}
+        </Text>
       </View>
     </TouchableOpacity>
   );

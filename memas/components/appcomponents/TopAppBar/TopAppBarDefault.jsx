@@ -22,7 +22,7 @@ export default function TopAppBarDefault({
           back ? navigation.goBack() : null;
         }}
       >
-        <Icons name={"back"} style={styles.topAppBarIconStyles} />
+        <Icons name={"back-light"} style={styles.topAppBarIconStyles} />
       </TouchableOpacity>
 
       <View
@@ -34,7 +34,9 @@ export default function TopAppBarDefault({
           height: 48,
         }}
       >
-        <Text style={{ fontSize: 18, fontWeight: "500" }}>{title}</Text>
+        <Text style={{ color: "#fff", fontSize: 18, fontWeight: "500" }}>
+          {title}
+        </Text>
       </View>
 
       <TouchableOpacity onPress={profileOnPress}>

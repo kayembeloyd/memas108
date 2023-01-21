@@ -83,6 +83,7 @@ export default function MaintenanceScheduleScreen({ navigation }) {
     <View
       style={{
         height: "100%",
+        backgroundColor: "#fff",
         flex: 1,
       }}
     >
@@ -106,16 +107,18 @@ export default function MaintenanceScheduleScreen({ navigation }) {
           <View
             style={{
               height: 70,
-              backgroundColor: "white",
+              backgroundColor: "#fff",
               width: 50,
             }}
           >
             <View
-              style={{ height: 2, backgroundColor: "black", width: width }}
+              style={{ height: 1, backgroundColor: "#CBCBCB", width: width }}
             ></View>
-            <Text style={{ marginTop: 8 }}>0{section + 1}</Text>
-            <Text>Jan</Text>
-            <Text>2023</Text>
+            <View style={{ marginTop: 8, marginLeft: 8 }}>
+              <Text style={{ fontWeight: "700" }}>0{section + 1}</Text>
+              <Text style={{ fontWeight: "700" }}>Jan</Text>
+              <Text style={{ fontWeight: "700" }}>2023</Text>
+            </View>
           </View>
         )}
         renderItem={renderItem}

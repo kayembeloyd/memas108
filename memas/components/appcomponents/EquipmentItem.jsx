@@ -7,10 +7,11 @@ export default function EquipmentItem({ style, onPress }) {
       style={[
         style,
         {
-          backgroundColor: "green",
           height: 96,
           marginBottom: 2,
           marginTop: 2,
+          borderBottomWidth: 2,
+          borderBottomColor: "#CBCBCB",
         },
       ]}
       onPress={onPress}

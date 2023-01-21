@@ -119,7 +119,7 @@ export default function EquipmentScreen({ navigation }) {
           const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarWithSearchbar
-              title={title}
+              title="Search equipment"
               back={back}
               navigation={navigation}
               profileOnPress={() => {
@@ -163,28 +163,11 @@ export default function EquipmentScreen({ navigation }) {
         itemHeight={100}
       />
 
-      {/*
-        <FlatList
-          ListHeaderComponent={renderHeader}
-          stickyHeaderIndices={[0]}
-          stickyHeaderHiddenOnScroll={true}
-          data={equipment}
-          keyExtractor={(item) => item.id}
-          initialNumToRender={10}
-          removeClippedSubviews={false}
-          getItemLayout={(data, index) => ({
-            length: 100,
-            offset: 100 * index,
-            index,
-          })}
-          renderItem={renderItem}
-        /> */}
-
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backfaceVisibility: "rgba(0, 0, 0, 0)",
+          backgroundColor: "transparent",
         }}
       >
         <ScanBottomSheet />

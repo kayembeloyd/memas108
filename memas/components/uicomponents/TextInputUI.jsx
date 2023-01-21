@@ -20,7 +20,8 @@ export default function TextInputUI({ style, iconName, hint, isButton }) {
           left: (iconName ? 42 : 0) + 2 + 10 + 10,
           zIndex: 1,
           height: 20,
-          backgroundColor: "yellow",
+          backgroundColor: style.backgroundColor,
+          paddingHorizontal: 2, // UI Bug
         }}
       >
         {/* 
@@ -32,14 +33,14 @@ export default function TextInputUI({ style, iconName, hint, isButton }) {
           top: 10,
           left: 42 + 2 + 10 + 10,  
         */}
-        <Text>{hint}</Text>
+        <Text style={{ color: "#4CAF50" }}>{hint}</Text>
       </View>
       <View
         style={{
           marginTop: 20,
           flexDirection: "row",
-          borderColor: "black",
-          borderWidth: 2,
+          borderColor: "#696969",
+          borderWidth: 1,
           borderRadius: 4,
           height: 48,
         }}
@@ -62,7 +63,6 @@ export default function TextInputUI({ style, iconName, hint, isButton }) {
         {isButton ? (
           <TouchableOpacity
             style={{
-              backgroundColor: "red",
               alignItems: "center",
               width: "100%",
               flexDirection: "row",
@@ -72,7 +72,7 @@ export default function TextInputUI({ style, iconName, hint, isButton }) {
           >
             <Text
               style={{
-                backgroundColor: "green",
+                color: "#8C8C8C",
               }}
             >
               {hint}

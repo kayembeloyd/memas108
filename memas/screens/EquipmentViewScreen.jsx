@@ -19,7 +19,7 @@ export default function EquipmentViewScreen({ navigation }) {
           const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarDefault
-              title={title}
+              title={"Equipment name"}
               back={back}
               navigation={navigation}
               profileOnPress={() => {
@@ -35,7 +35,7 @@ export default function EquipmentViewScreen({ navigation }) {
   return (
     <ScrollView
       style={{
-        backgroundColor: "yellow",
+        backgroundColor: "#fff",
         alignSelf: "center",
         width: "100%",
       }}
@@ -78,7 +78,8 @@ export default function EquipmentViewScreen({ navigation }) {
         <DefaultButton
           style={styles.buttonStyle}
           text={"Corrective Maintenance"}
-          backgroundColor={"red"}
+          backgroundColor={"#CE4949"}
+          color="#fff"
           onPress={() => {
             navigation.navigate("AddMaintenanceLogScreen");
           }}
@@ -86,7 +87,8 @@ export default function EquipmentViewScreen({ navigation }) {
         <DefaultButton
           style={styles.buttonStyle}
           text={"Preventive Maintenance"}
-          backgroundColor={"red"}
+          backgroundColor={"#CE4949"}
+          color="#fff"
           onPress={() => {
             navigation.navigate("AddMaintenanceLogScreen");
           }}

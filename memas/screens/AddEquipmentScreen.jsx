@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,17 +6,44 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { getHeaderTitle } from "@react-navigation/elements";
 import Icons from "../assets/icons/Icons";
 import InfoItem from "../components/appcomponents/InfoItem";
 import CardUI from "../components/uicomponents/CardUI";
 import DefaultButton from "../components/uicomponents/DefaultButton";
 import TextInputUI from "../components/uicomponents/TextInputUI";
+import TopAppBarDefault from "../components/appcomponents/TopAppBar/TopAppBarDefault";
+import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 
-export default function AddEquipmentScreen() {
+export default function AddEquipmentScreen({ navigation }) {
+  const [profileModalVisibility, setProfileModalVisibility] = useState(false);
+
+  useEffect(() => {
+    return navigation.addListener("focus", () => {
+      setProfileModalVisibility(false);
+
+      navigation.setOptions({
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name);
+          return (
+            <TopAppBarDefault
+              title="Add equipment"
+              back={back}
+              navigation={navigation}
+              profileOnPress={() => {
+                setProfileModalVisibility(true);
+              }}
+            />
+          );
+        },
+      });
+    });
+  }, [navigation]);
+
   return (
     <ScrollView
       style={{
-        backgroundColor: "yellow",
+        backgroundColor: "#fff",
         alignSelf: "center",
         width: "100%",
       }}
@@ -24,6 +51,16 @@ export default function AddEquipmentScreen() {
         alignItems: "center",
       }}
     >
+      <ProfileModalScreen
+        visible={profileModalVisibility}
+        onRequestClose={() => {
+          setProfileModalVisibility(false);
+        }}
+        onAddEquipmentPress={() => {
+          setProfileModalVisibility(false);
+        }}
+      />
+
       <View style={{ width: "95%", maxWidth: 700 }}>
         <TextInputUI style={styles.textInputStyles} hint="Equipment name" />
         <TextInputUI style={styles.textInputStyles} hint="Asset Tag" />
@@ -33,12 +70,13 @@ export default function AddEquipmentScreen() {
             styles.textInputStyles,
             {
               flexDirection: "row",
-              backgroundColor: "red",
               padding: 12,
             },
           ]}
         >
-          <Text style={{ flex: 1 }}>Select Department</Text>
+          <Text style={{ flex: 1, color: "#4CAF50", fontSize: 17 }}>
+            Select Department
+          </Text>
           <Icons name="arrow-dropdown" />
         </TouchableOpacity>
 
@@ -73,14 +111,11 @@ export default function AddEquipmentScreen() {
           </TouchableOpacity>
 
           <TextInputUI
-            style={[styles.textInputStyles, { width: "100%" }]}
+            style={{ backgroundColor: "#EDF7ED", marginTop: 10, width: "100%" }}
             hint="Data"
           />
 
-          <DefaultButton
-            style={styles.textInputStyles}
-            text={"Add Specification"}
-          />
+          <DefaultButton style={{ marginTop: 10 }} text={"Add Specification"} />
         </CardUI>
       </View>
 
@@ -97,5 +132,5 @@ export default function AddEquipmentScreen() {
 }
 
 const styles = StyleSheet.create({
-  textInputStyles: { backgroundColor: "blue", marginTop: 10 },
+  textInputStyles: { backgroundColor: "#fff", marginTop: 10 },
 });

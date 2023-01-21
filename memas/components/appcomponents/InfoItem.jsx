@@ -3,7 +3,7 @@ import { Text } from "react-native";
 import { StyleSheet } from "react-native";
 export default function InfoItem({ name, value, style }) {
   return (
-    <Text style={[style, styles.item, { backgroundColor: "red" }]}>
+    <Text style={[style, styles.item]}>
       <Text style={styles.bold}>{name}</Text>
       {value}
     </Text>
@@ -12,9 +12,10 @@ export default function InfoItem({ name, value, style }) {
 
 const styles = StyleSheet.create({
   bold: {
-    fontWeight: "600",
+    fontWeight: "700",
   },
   item: {
     marginBottom: 5,
+    fontSize: 16,
   },
 });

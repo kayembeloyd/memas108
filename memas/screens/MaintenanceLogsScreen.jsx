@@ -67,7 +67,7 @@ export default function MaintenanceLogsScreen({ navigation }) {
           const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarWithSearchbar
-              title={title}
+              title={"Search equipment"}
               back={back}
               navigation={navigation}
               profileOnPress={() => {

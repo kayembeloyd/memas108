@@ -34,7 +34,7 @@ export default function TopAppBarWithSearchbar({
           maxWidth: 700,
           alignItems: "center",
           borderRadius: 10,
-          backgroundColor: "green",
+          backgroundColor: "#fff",
           flexDirection: "row",
           flex: 1,
           paddingEnd: 10,
@@ -44,23 +44,23 @@ export default function TopAppBarWithSearchbar({
           onPress={() => {
             back ? navigation.goBack() : null;
           }}
+          style={{ backgroundColor: "transparent" }}
         >
           <Icons name={"back"} style={styles.topAppBarIconStyles} />
         </TouchableOpacity>
 
         <TextInput
-          defaultValue={title}
+          placeholder={title}
           style={{
             width: "100%",
             height: "100%",
-            backgroundColor: "red",
             paddingStart: 10,
             flex: 1,
           }}
         />
 
         <TouchableOpacity onPress={profileOnPress}>
-          <Icons name={"profile"} style={styles.topAppBarIconStyles} />
+          <Icons name={"profile-dark"} style={styles.topAppBarIconStyles} />
         </TouchableOpacity>
       </View>
     </View>

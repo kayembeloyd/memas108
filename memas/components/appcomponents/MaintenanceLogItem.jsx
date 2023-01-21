@@ -7,10 +7,11 @@ export default function MaintenanceLogItem({ style, onPress }) {
       style={[
         style,
         {
-          backgroundColor: "green",
           height: 148,
           marginBottom: 2,
           marginTop: 2,
+          borderBottomColor: "#CBCBCB",
+          borderBottomWidth: 1,
         },
       ]}
       onPress={onPress}

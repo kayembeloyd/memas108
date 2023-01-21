@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -8,16 +8,36 @@ import {
 } from "react-native";
 import Icons from "../assets/icons/Icons";
 import InfoItem from "../components/appcomponents/InfoItem";
+import TopAppBarDefault from "../components/appcomponents/TopAppBar/TopAppBarDefault";
 import CardUI from "../components/uicomponents/CardUI";
 import DateLine from "../components/uicomponents/DateLine";
 import DefaultButton from "../components/uicomponents/DefaultButton";
 import TextInputUI from "../components/uicomponents/TextInputUI";
 
-export default function AddMaintenanceLogScreen() {
+export default function AddMaintenanceLogScreen({ navigation }) {
+  useEffect(() => {
+    return navigation.addListener("focus", () => {
+      false;
+
+      navigation.setOptions({
+        header: ({ navigation, route, options, back }) => {
+          return (
+            <TopAppBarDefault
+              title="Add Maintenance Log"
+              back={back}
+              navigation={navigation}
+              profileOnPress={() => {}}
+            />
+          );
+        },
+      });
+    });
+  }, [navigation]);
+
   return (
     <ScrollView
       style={{
-        backgroundColor: "yellow",
+        backgroundColor: "#fff",
         alignSelf: "center",
         width: "100%",
       }}
@@ -32,7 +52,6 @@ export default function AddMaintenanceLogScreen() {
           style={{
             width: "100%",
             maxWidth: 900,
-            backgroundColor: "green",
             marginBottom: 2,
             marginTop: 2,
           }}
@@ -49,16 +68,13 @@ export default function AddMaintenanceLogScreen() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.textInputStyles,
-            {
-              flexDirection: "row",
-              backgroundColor: "red",
-              padding: 12,
-            },
-          ]}
+          style={{
+            marginTop: 10,
+            flexDirection: "row",
+            padding: 12,
+          }}
         >
-          <Text style={{ flex: 1 }}>
+          <Text style={{ flex: 1, fontSize: 18, color: "#4CAF50" }}>
             Maintenance Type: Preventive maintenance
           </Text>
           <Icons name="arrow-dropdown" />
@@ -91,11 +107,10 @@ export default function AddMaintenanceLogScreen() {
           </TouchableOpacity>
 
           <TextInputUI
-            style={[styles.textInputStyles, { width: "100%" }]}
+            style={{ backgroundColor: "#EDF7ED", marginTop: 10, width: "100%" }}
             hint="Data"
           />
-
-          <DefaultButton style={styles.textInputStyles} text={"Add Data"} />
+          <DefaultButton style={{ marginTop: 10 }} text={"Add Data"} />
         </CardUI>
       </View>
 
@@ -112,5 +127,5 @@ export default function AddMaintenanceLogScreen() {
 }
 
 const styles = StyleSheet.create({
-  textInputStyles: { backgroundColor: "blue", marginTop: 10 },
+  textInputStyles: { backgroundColor: "#fff", marginTop: 10 },
 });

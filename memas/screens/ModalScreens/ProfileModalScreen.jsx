@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import {
   StyleSheet,
   Modal,
@@ -29,7 +29,7 @@ export default function ProfileModalScreen({
       <Pressable
         style={{
           flex: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
           alignItems: "center",
         }}
         onPress={onRequestClose}
@@ -46,7 +46,9 @@ export default function ProfileModalScreen({
         >
           <View
             style={{
-              backgroundColor: "magenta",
+              backgroundColor: "#fff",
+              shadowColor: "#000",
+              shadowRadius: 5,
               paddingVertical: 20,
               maxHeight: height - 56 - 56,
               borderRadius: 10,
@@ -55,7 +57,7 @@ export default function ProfileModalScreen({
             <View
               style={{
                 height: 48,
-                backgroundColor: "blue",
+                backgroundColor: "#F9F9F9",
                 flexDirection: "row",
                 alignItems: "center",
               }}
@@ -71,6 +73,7 @@ export default function ProfileModalScreen({
               >
                 <Icons name="close" />
               </TouchableOpacity>
+              <Text>MEMAS</Text>
             </View>
 
             <ProfileUI style={{ marginVertical: 10, paddingHorizontal: 10 }} />
