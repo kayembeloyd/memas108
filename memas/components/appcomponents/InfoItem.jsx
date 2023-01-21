@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export default function InfoItem({ name, value, style }) {
   return (
     <Text style={[style, styles.item]}>
-      <Text style={styles.bold}>{name}</Text>
+      <Text style={styles.bold}>{name} </Text>
       {value}
     </Text>
   );

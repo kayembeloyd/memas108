@@ -12,6 +12,7 @@ export default function EquipmentItem({ style, onPress }) {
           marginTop: 2,
           borderBottomWidth: 2,
           borderBottomColor: "#CBCBCB",
+          paddingHorizontal: 10,
         },
       ]}
       onPress={onPress}

@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { getHeaderTitle } from "@react-navigation/elements";
 import InfoItem from "../components/appcomponents/InfoItem";
 import CardUI from "../components/uicomponents/CardUI";
 import DefaultButton from "../components/uicomponents/DefaultButton";
 import TopAppBarDefault from "../components/appcomponents/TopAppBar/TopAppBarDefault";
 import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
+import GenericModalScreen from "./ModalScreens/GenericModalScreen";
+import MemasCalendar from "../components/uicomponents/MemasCalendar/MemasCalendar";
 
 export default function EquipmentViewScreen({ navigation }) {
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
+  const [statusModalVisibility, setStatusModalVisibility] = useState(false);
+  const [calendarModalVisibility, setCalendarModalVisibility] = useState(false);
 
   useEffect(() => {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
+      setStatusModalVisibility(false);
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {
@@ -54,6 +66,107 @@ export default function EquipmentViewScreen({ navigation }) {
         }}
       />
 
+      <GenericModalScreen
+        visible={statusModalVisibility}
+        onRequestClose={() => {
+          setStatusModalVisibility(false);
+        }}
+        actionButtonsComponent={() => (
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+            }}
+          >
+            <DefaultButton
+              style={{ marginRight: 10, marginBottom: 10 }}
+              text="Cancel"
+              onPress={() => {
+                setStatusModalVisibility(false);
+              }}
+            />
+            <DefaultButton
+              style={{ marginRight: 10, marginBottom: 10 }}
+              text="Save"
+              onPress={() => {
+                setStatusModalVisibility(false);
+              }}
+            />
+          </View>
+        )}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "500",
+            marginLeft: 10,
+            marginTop: 10,
+          }}
+        >
+          Click to change status
+        </Text>
+        <TouchableOpacity>
+          <View
+            style={{
+              margin: 10,
+              paddingVertical: 15,
+              backgroundColor: "#D9D9D9",
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              style={{ paddingHorizontal: 10, fontSize: 18, fontWeight: "400" }}
+            >
+              Working
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </GenericModalScreen>
+
+      <GenericModalScreen
+        visible={calendarModalVisibility}
+        onRequestClose={() => {
+          setCalendarModalVisibility(false);
+        }}
+        actionButtonsComponent={() => (
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+            }}
+          >
+            <DefaultButton
+              style={{ marginRight: 10, marginBottom: 10 }}
+              text="Cancel"
+              onPress={() => {
+                setCalendarModalVisibility(false);
+              }}
+            />
+            <DefaultButton
+              style={{ marginRight: 10, marginBottom: 10 }}
+              text="Save"
+              onPress={() => {
+                setCalendarModalVisibility(false);
+              }}
+            />
+          </View>
+        )}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "500",
+            marginLeft: 10,
+            marginTop: 10,
+          }}
+        >
+          Select date
+        </Text>
+        <MemasCalendar style={{ width: "100%", height: 500 }} />
+      </GenericModalScreen>
+
       <CardUI style={styles.cardStyle} titleShown={true} title="General Info">
         <InfoItem name={"Name:"} value={"Oxygen Concentrator"} />
         <InfoItem name={"Department:"} value={"Maternity ward"} />
@@ -65,6 +178,7 @@ export default function EquipmentViewScreen({ navigation }) {
       <CardUI style={styles.cardStyle}>
         <InfoItem name={"Last Maintenance Date:"} value={"06 Nov 2022"} />
         <InfoItem name={"Next Service:"} value={"28 Nov 2022"} />
+        <InfoItem name={"Equipment Status:"} value={"working"} />
       </CardUI>
 
       <CardUI style={[styles.cardStyle]} center>
@@ -96,8 +210,17 @@ export default function EquipmentViewScreen({ navigation }) {
         <DefaultButton
           style={styles.buttonStyle}
           text={"Set next Service date"}
+          onPress={() => {
+            setCalendarModalVisibility(true);
+          }}
         />
-        <DefaultButton style={styles.buttonStyle} text={"Equipment Status"} />
+        <DefaultButton
+          style={styles.buttonStyle}
+          text={"Equipment Status"}
+          onPress={() => {
+            setStatusModalVisibility(true);
+          }}
+        />
       </CardUI>
 
       <CardUI style={styles.cardStyle} titleShown={true} title="Other Info">
