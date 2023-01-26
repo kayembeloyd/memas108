@@ -31,7 +31,7 @@ export default function EquipmentScreen({ navigation }) {
     <EquipmentItem
       style={{}}
       onPress={() => {
-        navigation.navigate("EquipmentViewScreen");
+        navigation.navigate("EquipmentViewScreen", { item });
       }}
       equipment={item}
     />

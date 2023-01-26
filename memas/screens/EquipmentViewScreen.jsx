@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
-  Button,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -15,11 +14,17 @@ import TopAppBarDefault from "../components/appcomponents/TopAppBar/TopAppBarDef
 import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 import GenericModalScreen from "./ModalScreens/GenericModalScreen";
 import MemasCalendar from "../components/uicomponents/MemasCalendar/MemasCalendar";
+import MiddleMan from "../database/MiddleMan";
 
-export default function EquipmentViewScreen({ navigation }) {
+export default function EquipmentViewScreen({ navigation, route }) {
+  const { item } = route.params;
+
+  const [equipment, setEquipment] = useState(item);
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const [statusModalVisibility, setStatusModalVisibility] = useState(false);
   const [calendarModalVisibility, setCalendarModalVisibility] = useState(false);
+
+  const runOnce = useRef(true);
 
   useEffect(() => {
     return navigation.addListener("focus", () => {
@@ -32,7 +37,7 @@ export default function EquipmentViewScreen({ navigation }) {
           const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarDefault
-              title={"Equipment name"}
+              title={equipment.name}
               back={back}
               navigation={navigation}
               profileOnPress={() => {
@@ -42,6 +47,19 @@ export default function EquipmentViewScreen({ navigation }) {
           );
         },
       });
+
+      if (runOnce) {
+        MiddleMan.departmentGet(equipment.departmentId).then((department) => {
+          setEquipment((oldState) => {
+            return {
+              ...oldState,
+              department: department,
+            };
+          });
+        });
+
+        runOnce.current = false;
+      }
     });
   }, [navigation]);
 
@@ -169,17 +187,41 @@ export default function EquipmentViewScreen({ navigation }) {
       </GenericModalScreen>
 
       <CardUI style={styles.cardStyle} titleShown={true} title="General Info">
-        <InfoItem name={"Name:"} value={"Oxygen Concentrator"} />
-        <InfoItem name={"Department:"} value={"Maternity ward"} />
-        <InfoItem name={"Make:"} value={"CANTA"} />
-        <InfoItem name={"Model:"} value={"VN-WS-08"} />
-        <InfoItem name={"Serial No.:"} value={"1299H39HD324"} />
+        <InfoItem name={"Name:"} value={equipment.name} />
+        <InfoItem
+          name={"Department:"}
+          value={
+            equipment.department ? equipment.department.name : "loading..."
+          }
+        />
+        <InfoItem name={"Make:"} value={equipment.make} />
+        <InfoItem name={"Model:"} value={equipment.model} />
+        <InfoItem name={"Serial No.:"} value={equipment.serialNumber} />
       </CardUI>
 
       <CardUI style={styles.cardStyle}>
-        <InfoItem name={"Last Maintenance Date:"} value={"06 Nov 2022"} />
-        <InfoItem name={"Next Service:"} value={"28 Nov 2022"} />
-        <InfoItem name={"Equipment Status:"} value={"working"} />
+        <InfoItem
+          name={"Last Maintenance Date:"}
+          value={
+            equipment.lastMaintenanceDate === "0000-00-00"
+              ? "Not Set"
+              : equipment.lastMaintenanceDate
+          }
+        />
+        <InfoItem
+          name={"Next Service:"}
+          value={
+            equipment.nextMaintenanceDate === "0000-00-00"
+              ? "Not Set"
+              : equipment.nextMaintenanceDate
+          }
+        />
+        <InfoItem
+          name={"Equipment Status:"}
+          value={
+            equipment.statusOptionId == 0 ? "Not Set" : equipment.statusOptionId
+          }
+        />
       </CardUI>
 
       <CardUI style={[styles.cardStyle]} center>
@@ -196,7 +238,8 @@ export default function EquipmentViewScreen({ navigation }) {
           backgroundColor={"#CE4949"}
           color="#fff"
           onPress={() => {
-            navigation.navigate("AddMaintenanceLogScreen");
+            const type = "correctiveMaintenance";
+            navigation.navigate("AddMaintenanceLogScreen", { equipment, type });
           }}
         />
         <DefaultButton
@@ -205,7 +248,8 @@ export default function EquipmentViewScreen({ navigation }) {
           backgroundColor={"#CE4949"}
           color="#fff"
           onPress={() => {
-            navigation.navigate("AddMaintenanceLogScreen");
+            const type = "preventiveMaintenance";
+            navigation.navigate("AddMaintenanceLogScreen", { equipment, type });
           }}
         />
         <DefaultButton
@@ -226,7 +270,14 @@ export default function EquipmentViewScreen({ navigation }) {
 
       <CardUI style={styles.cardStyle} titleShown={true} title="Other Info">
         <InfoItem name={"Supplied by:"} value={"Ministry of Health"} />
-        <InfoItem name={"Commission date:"} value={"6 Nov 2022"} />
+        <InfoItem
+          name={"Commission date:"}
+          value={
+            equipment.commissionDate === "0000-00-00"
+              ? "Not Set"
+              : equipment.commissionDate
+          }
+        />
       </CardUI>
     </ScrollView>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,8 +13,38 @@ import CardUI from "../components/uicomponents/CardUI";
 import DateLine from "../components/uicomponents/DateLine";
 import DefaultButton from "../components/uicomponents/DefaultButton";
 import TextInputUI from "../components/uicomponents/TextInputUI";
+import MiddleMan from "../database/MiddleMan";
 
-export default function AddMaintenanceLogScreen({ navigation }) {
+export default function AddMaintenanceLogScreen({ navigation, route }) {
+  const { equipment, type } = route.params;
+
+  const [loading, setLoading] = useState(false);
+  const [maintenanceLog, setMaintenanceLog] = useState({
+    equipmentId: equipment.id,
+    date: "",
+    doneByUserId: 0,
+    type: type,
+    description: "",
+    uploaded: 0,
+    maintenanceLogData: [],
+  });
+
+  const runOnce = useRef(true);
+
+  const tempMaintenanceLogData = useRef({
+    name: "",
+    value: "",
+  });
+  const [
+    tempMaintenanceLogDataTextInputHintText,
+    setTempMaintenanceLogDataTextInputHintText,
+  ] = useState("Data");
+  const tempMaintenanceLogDataTextInputRef = useRef(null);
+  const [
+    tempMaintenanceLogDataTextInputValue,
+    setTempMaintenanceLogDataTextInputValue,
+  ] = useState("");
+
   useEffect(() => {
     return navigation.addListener("focus", () => {
       false;
@@ -31,6 +61,19 @@ export default function AddMaintenanceLogScreen({ navigation }) {
           );
         },
       });
+
+      if (runOnce) {
+        MiddleMan.departmentGet(equipment.departmentId).then((department) => {
+          setMaintenanceLog((oldState) => {
+            return {
+              ...oldState,
+              department: department,
+            };
+          });
+        });
+
+        runOnce.current = false;
+      }
     });
   }, [navigation]);
 
@@ -57,14 +100,18 @@ export default function AddMaintenanceLogScreen({ navigation }) {
           }}
         >
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ flex: 1 }}>Department: Maternity</Text>
-            <Text>MMJ001</Text>
+            <Text style={{ flex: 1 }}>
+              {maintenanceLog.department
+                ? maintenanceLog.department.name
+                : "loading..."}
+            </Text>
+            <Text>{equipment.assetTag}</Text>
           </View>
           <Text style={[styles.item, { fontWeight: "700", fontSize: 18 }]}>
-            Oxygen Concentrator
+            {equipment.name}
           </Text>
-          <Text style={styles.item}>Make: Canta</Text>
-          <Text style={styles.item}>Model: VN-WS-08</Text>
+          <Text style={styles.item}>Make: {equipment.make}</Text>
+          <Text style={styles.item}>Model: {equipment.model}</Text>
         </View>
 
         <TouchableOpacity
@@ -75,7 +122,12 @@ export default function AddMaintenanceLogScreen({ navigation }) {
           }}
         >
           <Text style={{ flex: 1, fontSize: 18, color: "#4CAF50" }}>
-            Maintenance Type: Preventive maintenance
+            Maintenance Type:{" "}
+            {type === "preventiveMaintenance"
+              ? "Preventive Maintenance"
+              : type === "correctiveMaintenance"
+              ? "Corrective Maintenance"
+              : "Not Set"}
           </Text>
           <Icons name="arrow-dropdown" />
         </TouchableOpacity>
@@ -83,6 +135,14 @@ export default function AddMaintenanceLogScreen({ navigation }) {
         <TextInputUI
           style={styles.textInputStyles}
           hint="Maintenance description"
+          onChangeText={(e) => {
+            setMaintenanceLog((oldState) => {
+              return {
+                ...oldState,
+                description: e,
+              };
+            });
+          }}
         />
 
         <CardUI
@@ -90,27 +150,68 @@ export default function AddMaintenanceLogScreen({ navigation }) {
           titleShown
           title={"Maintenance Data"}
         >
-          <TouchableOpacity style={{ width: "100%" }}>
-            <InfoItem
-              style={{ paddingVertical: 5, width: "100%" }}
-              name={"O2 Conc: "}
-              value={"93%"}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ width: "100%" }}>
-            <InfoItem
-              style={{ paddingVertical: 5, width: "100%" }}
-              name={"Pressure: "}
-              value={"7psi"}
-            />
-          </TouchableOpacity>
+          {maintenanceLog.maintenanceLogData.map((maintenanceLogData) => {
+            return (
+              <TouchableOpacity
+                key={maintenanceLogData.id}
+                style={{ width: "100%" }}
+              >
+                <InfoItem
+                  style={{ paddingVertical: 5, width: "100%" }}
+                  name={maintenanceLogData.name}
+                  value={maintenanceLogData.value}
+                />
+              </TouchableOpacity>
+            );
+          })}
 
           <TextInputUI
             style={{ backgroundColor: "#EDF7ED", marginTop: 10, width: "100%" }}
-            hint="Data"
+            hint={tempMaintenanceLogDataTextInputHintText}
+            value={tempMaintenanceLogDataTextInputValue}
+            textInputRef={tempMaintenanceLogDataTextInputRef}
+            onChangeText={(e) => {
+              var words = e.split(":");
+
+              if (words.length > 0) {
+                if (words.length > 1) {
+                  tempMaintenanceLogData.current.value = words[1];
+                } else {
+                  tempMaintenanceLogData.current.name = words[0];
+                  setTempMaintenanceLogDataTextInputHintText(words[0]);
+                }
+              }
+
+              setTempMaintenanceLogDataTextInputValue(e);
+            }}
           />
-          <DefaultButton style={{ marginTop: 10 }} text={"Add Data"} />
+          <DefaultButton
+            style={{ marginTop: 10 }}
+            text={"Add Data"}
+            onPress={() => {
+              setMaintenanceLog((oldState) => {
+                return {
+                  ...oldState,
+                  maintenanceLogData: [
+                    ...oldState.maintenanceLogData,
+                    {
+                      id: oldState.maintenanceLogData.length + 1,
+                      name: tempMaintenanceLogData.current.name,
+                      value: tempMaintenanceLogData.current.value,
+                    },
+                  ],
+                };
+              });
+
+              tempMaintenanceLogDataTextInputRef.current
+                ? tempMaintenanceLogDataTextInputRef.current.clear()
+                : console.log("somthing is not right");
+
+              tempMaintenanceLogData.current.name = "";
+              tempMaintenanceLogData.current.value = "";
+              setTempMaintenanceLogDataTextInputHintText("Data");
+            }}
+          />
         </CardUI>
       </View>
 
@@ -120,7 +221,15 @@ export default function AddMaintenanceLogScreen({ navigation }) {
           width: "60%",
           maxWidth: 700,
         }}
-        text={"SAVE"}
+        text={loading ? "Loading..." : "SAVE"}
+        onPress={() => {
+          if (!loading) {
+            MiddleMan.maintenanceLogNew(maintenanceLog).then((result) => {
+              setLoading(false);
+            });
+            setLoading(true);
+          }
+        }}
       />
     </ScrollView>
   );

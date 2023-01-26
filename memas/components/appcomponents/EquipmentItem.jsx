@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import MiddleMan from "../../database/MiddleMan";
 
 export default function EquipmentItem({ style, onPress, equipment }) {
+  const runOnce = useRef(true);
+
+  const [department, setDepartment] = useState("loading...");
+
+  useEffect(() => {
+    if (runOnce) {
+      MiddleMan.departmentGet(equipment.departmentId).then((department) => {
+        setDepartment(department.name);
+      });
+
+      runOnce.current = false;
+    }
+  }, []);
+
   return (
     <TouchableOpacity
       style={[
@@ -18,7 +33,7 @@ export default function EquipmentItem({ style, onPress, equipment }) {
       onPress={onPress}
     >
       <View style={{ flexDirection: "row" }}>
-        <Text style={{ flex: 1 }}>Department: {equipment.departmentId}</Text>
+        <Text style={{ flex: 1 }}>{department}</Text>
         <Text>{equipment.assetTag}</Text>
       </View>
       <Text style={{ fontWeight: "700", fontSize: 18 }}>{equipment.name}</Text>

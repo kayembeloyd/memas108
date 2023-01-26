@@ -20,7 +20,8 @@ import MemasCalendar from "../components/uicomponents/MemasCalendar/MemasCalenda
 import MiddleMan from "../database/MiddleMan";
 
 export default function AddEquipmentScreen({ navigation }) {
-  const [departments, setDepartments] = useState([{ id: 1 }, { id: 2 }]);
+  const canLoadMore = useRef(true);
+  const [departments, setDepartments] = useState([]);
   const [equipment, setEquipment] = useState({
     name: "",
     assetTag: "",
@@ -77,6 +78,13 @@ export default function AddEquipmentScreen({ navigation }) {
           );
         },
       });
+
+      if (canLoadMore.current) {
+        MiddleMan.departments().then((departments) => {
+          setDepartments(departments);
+          canLoadMore.current = false;
+        });
+      }
     });
   }, [navigation]);
 
@@ -112,7 +120,7 @@ export default function AddEquipmentScreen({ navigation }) {
           return (
             <ListItemButton
               key={department.id}
-              text={"Department " + department.id}
+              text={department.name}
               style={{ marginHorizontal: 5, marginVertical: 2 }}
               onPress={() => {
                 setEquipment((oldState) => {
@@ -213,7 +221,11 @@ export default function AddEquipmentScreen({ navigation }) {
         >
           <Text style={{ flex: 1, color: "#4CAF50", fontSize: 17 }}>
             Select Department:{" "}
-            {equipment.departmentId == 0 ? "" : equipment.departmentId}
+            {equipment.departmentId == 0
+              ? ""
+              : departments.find((department) => {
+                  return department.id == equipment.departmentId;
+                }).name}
           </Text>
           <Icons name="arrow-dropdown" />
         </TouchableOpacity>
