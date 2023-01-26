@@ -3,7 +3,17 @@ import { Text, TouchableOpacity } from "react-native";
 import { StyleSheet, TextInput, View } from "react-native";
 import Icons from "../../assets/icons/Icons";
 
-export default function TextInputUI({ style, iconName, hint, isButton }) {
+export default function TextInputUI({
+  style,
+  iconName,
+  hint,
+  isButton,
+  onChangeText,
+  textInputRef,
+  value,
+  onPress,
+  onClearPress,
+}) {
   const ICON_WIDTH = 42;
   const BORDER_WIDTH = 2;
   const TEXTINPUT_HEIGHT = 48;
@@ -69,19 +79,27 @@ export default function TextInputUI({ style, iconName, hint, isButton }) {
               paddingHorizontal: 10,
               paddingVertical: 8,
             }}
+            onPress={onPress}
           >
             <Text
               style={{
                 color: "#8C8C8C",
+                flex: 1,
               }}
             >
-              {hint}
+              {value}
             </Text>
+            <TouchableOpacity onPress={onClearPress}>
+              <Icons name="close" />
+            </TouchableOpacity>
           </TouchableOpacity>
         ) : (
           <TextInput
+            ref={textInputRef}
+            value={value}
             editable={!isButton}
             placeholder={hint}
+            onChangeText={onChangeText}
             style={{ paddingHorizontal: 10, paddingVertical: 8, flex: 1 }}
           />
         )}

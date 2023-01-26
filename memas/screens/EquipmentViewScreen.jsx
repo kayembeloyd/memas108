@@ -25,6 +25,7 @@ export default function EquipmentViewScreen({ navigation }) {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
       setStatusModalVisibility(false);
+      setCalendarModalVisibility(false);
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {

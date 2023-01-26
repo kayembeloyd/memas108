@@ -119,7 +119,13 @@ export default function CCalendar(props) {
 
       {/* CalendarViewType */}
       {calendarViewType === monthViewType ? (
-        <MonthView month={currentMonth} year={currentYear} />
+        <MonthView
+          month={currentMonth}
+          year={currentYear}
+          onDateSelected={(labelItem) => {
+            props.onDateSelected(labelItem);
+          }}
+        />
       ) : calendarViewType === yearViewType ? (
         <YearView
           year={currentYear}

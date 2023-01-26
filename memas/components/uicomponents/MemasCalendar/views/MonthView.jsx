@@ -99,7 +99,8 @@ export default function MonthView(props) {
             style={{ flex: 1 }}
             item={item}
             onItemPress={(labelItem) => {
-              console.log(labelItem);
+              // console.log(labelItem);
+              props.onDateSelected(labelItem);
             }}
             labelHeight={dimension.height / 7}
             textWidth={34}

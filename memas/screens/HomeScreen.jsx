@@ -21,6 +21,7 @@ export default function HomeScreen({ navigation }) {
             <TopAppBarMainCentered
               title={title}
               back={back}
+              s
               navigation={navigation}
               profileOnPress={() => {
                 setProfileModalVisibility(true);
