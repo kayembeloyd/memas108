@@ -59,6 +59,7 @@ export default function MainNavigationStack({ navigation }) {
       <stackNavigator.Screen
         name="EquipmentScreen"
         component={EquipmentScreen}
+        initialParams={{ updatedEquipment: null }}
         options={{
           header: ({ navigation, route, options, back }) => {
             const title = getHeaderTitle(options, route.name);

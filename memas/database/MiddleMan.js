@@ -2,7 +2,7 @@ export default class MiddleMan {
   static API_ADDRESS = "http://192.168.0.39/memas108api";
 
   static async equipment(page, size) {
-    const equipmentAsync = async (page, size) => {
+    const iasync = async (page, size) => {
       try {
         const response = await fetch(
           this.API_ADDRESS + "/equipment?page=" + page + "&size=" + size
@@ -15,11 +15,11 @@ export default class MiddleMan {
       }
     };
 
-    return await equipmentAsync(page, size);
+    return await iasync(page, size);
   }
 
   static async equipmentNew(equipment) {
-    const equipmentNewAsync = async (item) => {
+    const iasync = async (item) => {
       try {
         var modItem = {
           ...item,
@@ -41,11 +41,37 @@ export default class MiddleMan {
       }
     };
 
-    return await equipmentNewAsync(equipment);
+    return await iasync(equipment);
+  }
+
+  static async equipmentUpdate(equipment) {
+    const iasync = async (item) => {
+      try {
+        var modItem = {
+          ...item,
+          technicalSpecifications: JSON.stringify(item.technicalSpecifications),
+        };
+
+        const response = await fetch(this.API_ADDRESS + "/equipment/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: new URLSearchParams(modItem).toString(),
+        });
+
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    };
+
+    return await iasync(equipment);
   }
 
   static async departments() {
-    const departmentsAsync = async () => {
+    const iasync = async () => {
       return [
         { id: 1, name: "TB Ward", uploaded: 0 },
         { id: 2, name: "Female Ward", uploaded: 0 },
@@ -68,11 +94,11 @@ export default class MiddleMan {
       ];
     };
 
-    return await departmentsAsync();
+    return await iasync();
   }
 
   static async departmentGet(id) {
-    const departmentGetAsync = async (id) => {
+    const iasync = async (id) => {
       const departments = await this.departments();
 
       return departments.find((department) => {
@@ -80,11 +106,11 @@ export default class MiddleMan {
       });
     };
 
-    return departmentGetAsync(id);
+    return iasync(id);
   }
 
   static async maintenanceLogNew(maintenanceLog) {
-    const maintenanceLogNewAsync = async (item) => {
+    const iasync = async (item) => {
       try {
         var modItem = {
           ...item,
@@ -106,11 +132,11 @@ export default class MiddleMan {
       }
     };
 
-    return await maintenanceLogNewAsync(maintenanceLog);
+    return await iasync(maintenanceLog);
   }
 
   static async maintenanceLogs(page, size) {
-    const maintenanceLogsAsync = async (page, size) => {
+    const iasync = async (page, size) => {
       try {
         const response = await fetch(
           this.API_ADDRESS + "/maintenance-logs?page=" + page + "&size=" + size
@@ -123,11 +149,11 @@ export default class MiddleMan {
       }
     };
 
-    return await maintenanceLogsAsync(page, size);
+    return await iasync(page, size);
   }
 
   static async userGet(id) {
-    const getUserAsync = async (id) => {
+    const iasync = async (id) => {
       return {
         id: 0,
         username: "kayembeloyd",
@@ -137,6 +163,6 @@ export default class MiddleMan {
       };
     };
 
-    return await getUserAsync(id);
+    return await iasync(id);
   }
 }

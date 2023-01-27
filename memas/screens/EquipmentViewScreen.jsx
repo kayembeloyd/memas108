@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { getHeaderTitle } from "@react-navigation/elements";
 import InfoItem from "../components/appcomponents/InfoItem";
 import CardUI from "../components/uicomponents/CardUI";
 import DefaultButton from "../components/uicomponents/DefaultButton";
@@ -17,13 +16,12 @@ import MemasCalendar from "../components/uicomponents/MemasCalendar/MemasCalenda
 import MiddleMan from "../database/MiddleMan";
 
 export default function EquipmentViewScreen({ navigation, route }) {
-  const { item } = route.params;
-
-  const [equipment, setEquipment] = useState(item);
+  const [equipment, setEquipment] = useState({ ...route.params.equipment });
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const [statusModalVisibility, setStatusModalVisibility] = useState(false);
   const [calendarModalVisibility, setCalendarModalVisibility] = useState(false);
 
+  const tEquipment = useRef({ ...equipment });
   const runOnce = useRef(true);
 
   useEffect(() => {
@@ -34,11 +32,14 @@ export default function EquipmentViewScreen({ navigation, route }) {
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarDefault
               title={equipment.name}
-              back={back}
+              back={null}
+              backPress={() => {
+                route.params.updateParent(tEquipment.current);
+                navigation.goBack();
+              }}
               navigation={navigation}
               profileOnPress={() => {
                 setProfileModalVisibility(true);
@@ -56,6 +57,11 @@ export default function EquipmentViewScreen({ navigation, route }) {
               department: department,
             };
           });
+
+          tEquipment.current = {
+            ...tEquipment.current,
+            department: department,
+          };
         });
 
         runOnce.current = false;
@@ -183,7 +189,52 @@ export default function EquipmentViewScreen({ navigation, route }) {
         >
           Select date
         </Text>
-        <MemasCalendar style={{ width: "100%", height: 500 }} />
+        <MemasCalendar
+          style={{ width: "100%", height: 500 }}
+          onDateSelected={(date) => {
+            if (date.date) {
+              setEquipment((oldState) => {
+                const updateEquipment = {
+                  ...oldState,
+                  nextMaintenanceDate:
+                    "" +
+                    date.date.getFullYear() +
+                    "-" +
+                    (date.date.getMonth() < 9
+                      ? "0" + (date.date.getMonth() + 1)
+                      : date.date.getMonth() + 1) +
+                    "-" +
+                    (date.date.getDate() < 9
+                      ? "0" + date.date.getDate()
+                      : date.date.getDate()),
+                };
+
+                tEquipment.current = {
+                  ...tEquipment.current,
+                  nextMaintenanceDate:
+                    "" +
+                    date.date.getFullYear() +
+                    "-" +
+                    (date.date.getMonth() < 9
+                      ? "0" + (date.date.getMonth() + 1)
+                      : date.date.getMonth() + 1) +
+                    "-" +
+                    (date.date.getDate() < 9
+                      ? "0" + date.date.getDate()
+                      : date.date.getDate()),
+                };
+
+                MiddleMan.equipmentUpdate(updateEquipment).then(
+                  (response) => null
+                );
+
+                return updateEquipment;
+              });
+
+              setCalendarModalVisibility(false);
+            }
+          }}
+        />
       </GenericModalScreen>
 
       <CardUI style={styles.cardStyle} titleShown={true} title="General Info">

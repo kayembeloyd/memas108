@@ -7,6 +7,7 @@ export default function TopAppBarDefault({
   title,
   back,
   profileOnPress,
+  backPress,
 }) {
   return (
     <View
@@ -19,6 +20,7 @@ export default function TopAppBarDefault({
     >
       <TouchableOpacity
         onPress={() => {
+          backPress ? backPress() : null;
           back ? navigation.goBack() : null;
         }}
       >

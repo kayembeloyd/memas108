@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Text, useWindowDimensions } from "react-native";
 import { StyleSheet, View } from "react-native";
-import { getHeaderTitle } from "@react-navigation/elements";
 import BigList from "react-native-big-list";
 import EquipmentItem from "../components/appcomponents/EquipmentItem";
 import FilterBar from "../components/appcomponents/FilterBar/FilterBar";
@@ -13,7 +12,7 @@ import GenericModalScreen from "./ModalScreens/GenericModalScreen";
 import ListItemButton from "../components/uicomponents/ListItemButton";
 import MiddleMan from "../database/MiddleMan";
 
-export default function EquipmentScreen({ navigation }) {
+export default function EquipmentScreen({ navigation, route }) {
   const equipmentPage = useRef(1);
   const canLoadMore = useRef(true);
   const [equipment, setEquipment] = useState([]);
@@ -31,7 +30,10 @@ export default function EquipmentScreen({ navigation }) {
     <EquipmentItem
       style={{}}
       onPress={() => {
-        navigation.navigate("EquipmentViewScreen", { item });
+        navigation.navigate("EquipmentViewScreen", {
+          equipment: item,
+          updateParent: updatedEquipment,
+        });
       }}
       equipment={item}
     />
@@ -62,6 +64,18 @@ export default function EquipmentScreen({ navigation }) {
     </View>
   );
 
+  const updatedEquipment = (o) => {
+    // Find it
+    const i = equipment.findIndex((p) => p.id == o.id);
+    i != -1
+      ? setEquipment((oldState) => {
+          const newState = [...oldState];
+          newState[i] = o;
+          return newState;
+        })
+      : null;
+  };
+
   useEffect(() => {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
@@ -69,7 +83,6 @@ export default function EquipmentScreen({ navigation }) {
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarWithSearchbar
               title="Search equipment"
