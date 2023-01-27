@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -6,16 +6,41 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
-import { getHeaderTitle } from "@react-navigation/elements";
+
 import InfoItem from "../components/appcomponents/InfoItem";
 import CardUI from "../components/uicomponents/CardUI";
 import DateLine from "../components/uicomponents/DateLine";
 import TopAppBarDefault from "../components/appcomponents/TopAppBar/TopAppBarDefault";
 import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
+import MiddleMan from "../database/MiddleMan";
 
-export default function MaintenanceLogViewScreen({ navigation }) {
+export default function MaintenanceLogViewScreen({ navigation, route }) {
+  const { item } = route.params;
+  const maintenanceLog = item;
+
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const { height, width } = useWindowDimensions();
+
+  const runOnce = useRef(true);
+
+  const [department, setDepartment] = useState("loading...");
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    if (runOnce) {
+      MiddleMan.departmentGet(maintenanceLog.equipment.departmentId).then(
+        (department) => {
+          setDepartment(department.name);
+        }
+      );
+
+      MiddleMan.userGet(0).then((user) => {
+        setUser(user);
+      });
+
+      runOnce.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     return navigation.addListener("focus", () => {
@@ -23,10 +48,9 @@ export default function MaintenanceLogViewScreen({ navigation }) {
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name);
           return (
             <TopAppBarDefault
-              title={"Maintenance Log #1234"}
+              title={"Maintenance Log #" + maintenanceLog.id}
               back={back}
               navigation={navigation}
               profileOnPress={() => {
@@ -45,6 +69,7 @@ export default function MaintenanceLogViewScreen({ navigation }) {
         backgroundColor: "#fff",
         alignSelf: "center",
         width: "100%",
+        paddingHorizontal: 10,
       }}
       contentContainerStyle={{
         alignItems: "center",
@@ -72,14 +97,14 @@ export default function MaintenanceLogViewScreen({ navigation }) {
         }}
       >
         <View style={{ flexDirection: "row" }}>
-          <Text style={{ flex: 1 }}>Department: Maternity</Text>
-          <Text>MMJ001</Text>
+          <Text style={{ flex: 1 }}>Department: {department}</Text>
+          <Text>{maintenanceLog.equipment.assetTag}</Text>
         </View>
         <Text style={[styles.item, { fontWeight: "700", fontSize: 18 }]}>
-          Oxygen Concentrator
+          {maintenanceLog.equipment.name}
         </Text>
-        <Text style={styles.item}>Make: Canta</Text>
-        <Text style={styles.item}>Model: VN-WS-08</Text>
+        <Text style={styles.item}>Make: {maintenanceLog.equipment.make}</Text>
+        <Text style={styles.item}>Model: {maintenanceLog.equipment.model}</Text>
       </View>
 
       <View style={{ width: "100%", maxWidth: 900, marginVertical: 15 }}>
@@ -89,10 +114,7 @@ export default function MaintenanceLogViewScreen({ navigation }) {
 
       <View style={{ width: "100%", maxWidth: 900, marginVertical: 10 }}>
         <Text style={{ fontSize: 18 }}>Description</Text>
-        <Text style={{ fontSize: 16 }}>
-          General PPM, Replaced Sieve beds, Replaced filters, Replaced
-          Compressor gaskets
-        </Text>
+        <Text style={{ fontSize: 16 }}>{maintenanceLog.description}</Text>
       </View>
 
       <CardUI
@@ -100,13 +122,20 @@ export default function MaintenanceLogViewScreen({ navigation }) {
         titleShown={true}
         title="Maintenance data"
       >
-        <InfoItem name={"O2 Conc.:"} value={"93%"} />
-        <InfoItem name={"Pressure:"} value={"7psi"} />
+        {maintenanceLog.maintenanceLogData.map((maintenanceLogData) => {
+          return (
+            <InfoItem
+              key={maintenanceLogData.id}
+              name={maintenanceLogData.name}
+              value={maintenanceLogData.value}
+            />
+          );
+        })}
       </CardUI>
 
       <View style={{ width: "100%", maxWidth: 900, alignItems: "flex-end" }}>
         <Text>maintenance done by:</Text>
-        <Text>Lloyd Kayembe</Text>
+        <Text>{user.name ? user.name : "Loading..."}</Text>
       </View>
     </ScrollView>
   );

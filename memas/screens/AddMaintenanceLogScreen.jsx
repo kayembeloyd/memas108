@@ -16,12 +16,26 @@ import TextInputUI from "../components/uicomponents/TextInputUI";
 import MiddleMan from "../database/MiddleMan";
 
 export default function AddMaintenanceLogScreen({ navigation, route }) {
+  const getFormattedDate = (date) => {
+    return (
+      "" +
+      date.getFullYear() +
+      "-" +
+      (date.getMonth() < 9
+        ? "0" + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      "-" +
+      (date.getDate() < 9 ? "0" + date.getDate() : date.getDate()) +
+      " 00:00:00"
+    );
+  };
+
   const { equipment, type } = route.params;
 
   const [loading, setLoading] = useState(false);
   const [maintenanceLog, setMaintenanceLog] = useState({
     equipmentId: equipment.id,
-    date: "",
+    date: getFormattedDate(new Date()),
     doneByUserId: 0,
     type: type,
     description: "",
@@ -89,7 +103,7 @@ export default function AddMaintenanceLogScreen({ navigation, route }) {
       }}
     >
       <View style={{ width: "95%", maxWidth: 700 }}>
-        <DateLine style={{ maxWidth: 900 }} />
+        <DateLine style={{ maxWidth: 900 }} dateText={maintenanceLog.date} />
 
         <View
           style={{

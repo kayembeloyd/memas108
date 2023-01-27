@@ -109,5 +109,34 @@ export default class MiddleMan {
     return await maintenanceLogNewAsync(maintenanceLog);
   }
 
-  static async maintenanceLogs(page, size) {}
+  static async maintenanceLogs(page, size) {
+    const maintenanceLogsAsync = async (page, size) => {
+      try {
+        const response = await fetch(
+          this.API_ADDRESS + "/maintenance-logs?page=" + page + "&size=" + size
+        );
+
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    };
+
+    return await maintenanceLogsAsync(page, size);
+  }
+
+  static async userGet(id) {
+    const getUserAsync = async (id) => {
+      return {
+        id: 0,
+        username: "kayembeloyd",
+        avatarId: 0,
+        name: "Lloyd Kayembe",
+        position: "Biomedical Engineer",
+      };
+    };
+
+    return await getUserAsync(id);
+  }
 }

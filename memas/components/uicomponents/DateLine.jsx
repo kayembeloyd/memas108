@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icons from "../../assets/icons/Icons";
 
-export default function DateLine({ style, editable }) {
+export default function DateLine({ style, editable, dateText }) {
   return (
     <View
       style={[
@@ -20,13 +20,17 @@ export default function DateLine({ style, editable }) {
         <TouchableOpacity
           style={{ marginHorizontal: 10, flexDirection: "row" }}
         >
-          <Text style={{ color: "#4CAF50" }}>06 Jun 2021</Text>
+          <Text style={{ color: "#4CAF50" }}>
+            {dateText ? dateText : "Not Set"}
+          </Text>
 
           <Icons style={{ marginLeft: 5 }} name="edit" />
         </TouchableOpacity>
       ) : (
         <View style={{ marginHorizontal: 10, flexDirection: "row" }}>
-          <Text style={{ color: "#4CAF50" }}>06 Jun 2021</Text>
+          <Text style={{ color: "#4CAF50" }}>
+            {dateText ? dateText : "Not Set"}
+          </Text>
         </View>
       )}
       <View style={{ flex: 1, height: 1, backgroundColor: "#CBCBCB" }}></View>
