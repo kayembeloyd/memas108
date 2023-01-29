@@ -8,7 +8,7 @@ export default function MaintenanceLogItem({ style, onPress, maintenanceLog }) {
   const [department, setDepartment] = useState("loading...");
 
   useEffect(() => {
-    if (runOnce) {
+    if (runOnce.current) {
       MiddleMan.departmentGet(maintenanceLog.equipment.departmentId).then(
         (department) => {
           setDepartment(department.name);

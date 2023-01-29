@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import MiddleMan from "../../database/MiddleMan";
 
-export default function MaintenanceScheduleItem({ style, onPress }) {
+export default function MaintenanceScheduleItem({ style, onPress, equipment }) {
+  const runOnce = useRef(true);
+
+  const [departmentText, setDepartmentText] = useState("loading...");
+
+  useEffect(() => {
+    if (runOnce.current) {
+      MiddleMan.departmentGet(equipment.departmentId).then((department) => {
+        setDepartmentText(department.name);
+      });
+
+      runOnce.current = false;
+    }
+  }, []);
+
   return (
     <TouchableOpacity
       style={[
@@ -20,9 +35,11 @@ export default function MaintenanceScheduleItem({ style, onPress }) {
       ]}
       onPress={onPress}
     >
-      <Text style={[styles.item]}>Oxygen Concentrator (MMJ001)</Text>
-      <Text style={styles.item}>Preventive maintenance</Text>
-      <Text style={styles.item}>Labour Ward</Text>
+      <Text style={[styles.item]}>
+        {equipment.name} ({equipment.assetTag})
+      </Text>
+      <Text style={styles.item}>Preventive/Corrective maintenance</Text>
+      <Text style={styles.item}>{departmentText}</Text>
     </TouchableOpacity>
   );
 }

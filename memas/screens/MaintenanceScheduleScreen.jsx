@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, useWindowDimensions } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { getHeaderTitle } from "@react-navigation/elements";
@@ -9,31 +9,44 @@ import ScanBottomSheet from "../components/appcomponents/ScanBottomSheet";
 import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 import TopAppBarWithSearchbar from "../components/appcomponents/TopAppBar/TopAppBarWithSearchbar";
 import MaintenanceScheduleItem from "../components/appcomponents/MaintenanceScheduleItem";
+import MiddleMan from "../database/MiddleMan";
+import Helper from "../components/uicomponents/MemasCalendar/helpers/Helper";
 
 export default function MaintenanceScheduleScreen({ navigation }) {
-  const [maintenanceSchedules, setMaintenanceSchedules] = useState([
-    [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-    [{ id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }],
-    [{ id: 10 }, { id: 11 }, { id: 12 }],
-    [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-    [{ id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }],
-    [{ id: 10 }, { id: 11 }, { id: 12 }],
-    [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-    [{ id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }],
-    [{ id: 10 }, { id: 11 }, { id: 12 }],
-    [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
-    [{ id: 6 }, { id: 7 }, { id: 8 }, { id: 9 }],
-    [{ id: 10 }, { id: 11 }, { id: 12 }],
-  ]);
+  const maintenanceSchedulesPage = useRef(1);
+  const canLoadMore = useRef(true);
+  const maintenanceSchedules = useRef([]);
+  const maintenanceScheduleDateSections = useRef([]);
+  const [sortedMaintenanceSchedules, setSortedMaintenanceSchedules] = useState(
+    []
+  );
 
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const { height, width } = useWindowDimensions();
+
+  const getFormattedDate2 = (date) => {
+    return (
+      "" +
+      date.getFullYear() +
+      "-" +
+      (date.getMonth() < 9
+        ? "0" + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      "-" +
+      (date.getDate() < 9 ? "0" + date.getDate() : date.getDate())
+    );
+  };
+
   const renderItem = ({ item, index }) => (
     <MaintenanceScheduleItem
       style={{}}
       onPress={() => {
-        navigation.navigate("AddMaintenanceLogScreen");
+        navigation.navigate("AddMaintenanceLogScreen", {
+          equipment: item,
+          type: "preventiveMaintenance",
+        });
       }}
+      equipment={item}
     />
   );
   const renderHeader = () => (
@@ -76,6 +89,52 @@ export default function MaintenanceScheduleScreen({ navigation }) {
           );
         },
       });
+
+      if (canLoadMore.current) {
+        MiddleMan.maintenanceSchedule(
+          maintenanceSchedulesPage.current,
+          10,
+          getFormattedDate2(new Date())
+        ).then((newMaintenanceSchedules) => {
+          canLoadMore.current = newMaintenanceSchedules.length > 0;
+
+          var sorted = [];
+          var toSort = [
+            ...maintenanceSchedules.current,
+            ...newMaintenanceSchedules,
+          ];
+
+          for (const ms of toSort) {
+            !maintenanceScheduleDateSections.current.find(
+              (o) => o.date == ms.nextMaintenanceDate
+            )
+              ? maintenanceScheduleDateSections.current.push({
+                  index: maintenanceScheduleDateSections.current.length,
+                  date: ms.nextMaintenanceDate,
+                })
+              : null;
+          }
+
+          for (const msds of maintenanceScheduleDateSections.current)
+            sorted.push([]);
+
+          for (const ms of toSort) {
+            const msds = maintenanceScheduleDateSections.current.find(
+              (o) => o.date == ms.nextMaintenanceDate
+            );
+            msds ? sorted[msds.index].push(ms) : null;
+          }
+
+          maintenanceSchedules.current = [
+            ...maintenanceSchedules.current,
+            ...newMaintenanceSchedules,
+          ];
+
+          maintenanceSchedulesPage.current += 1;
+
+          setSortedMaintenanceSchedules(sorted);
+        });
+      }
     });
   }, [navigation]);
 
@@ -101,7 +160,7 @@ export default function MaintenanceScheduleScreen({ navigation }) {
       <BigList
         renderHeader={renderHeader}
         headerHeight={50}
-        sections={maintenanceSchedules}
+        sections={sortedMaintenanceSchedules}
         stickySectionHeadersEnabled
         renderSectionHeader={(section) => (
           <View
@@ -115,9 +174,29 @@ export default function MaintenanceScheduleScreen({ navigation }) {
               style={{ height: 1, backgroundColor: "#CBCBCB", width: width }}
             ></View>
             <View style={{ marginTop: 8, marginLeft: 8 }}>
-              <Text style={{ fontWeight: "700" }}>0{section + 1}</Text>
-              <Text style={{ fontWeight: "700" }}>Jan</Text>
-              <Text style={{ fontWeight: "700" }}>2023</Text>
+              <Text style={{ fontWeight: "700" }}>
+                {maintenanceScheduleDateSections.current.length > section
+                  ? new Date(
+                      maintenanceScheduleDateSections.current[section].date
+                    ).getDate()
+                  : "loading..."}
+              </Text>
+              <Text style={{ fontWeight: "700" }}>
+                {maintenanceScheduleDateSections.current.length > section
+                  ? Helper.monthShortNameFromNumber(
+                      new Date(
+                        maintenanceScheduleDateSections.current[section].date
+                      ).getMonth()
+                    )
+                  : "loading..."}
+              </Text>
+              <Text style={{ fontWeight: "700" }}>
+                {maintenanceScheduleDateSections.current.length > section
+                  ? new Date(
+                      maintenanceScheduleDateSections.current[section].date
+                    ).getFullYear()
+                  : "loading..."}
+              </Text>
             </View>
           </View>
         )}

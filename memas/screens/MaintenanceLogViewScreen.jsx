@@ -86,7 +86,10 @@ export default function MaintenanceLogViewScreen({ navigation, route }) {
         }}
       />
 
-      <DateLine style={{ width: 800, maxWidth: 900 }} />
+      <DateLine
+        style={{ width: 800, maxWidth: 900 }}
+        dateText={maintenanceLog.date}
+      />
 
       <View
         style={{

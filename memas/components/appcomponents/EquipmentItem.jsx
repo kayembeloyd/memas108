@@ -8,7 +8,7 @@ export default function EquipmentItem({ style, onPress, equipment }) {
   const [department, setDepartment] = useState("loading...");
 
   useEffect(() => {
-    if (runOnce) {
+    if (runOnce.current) {
       MiddleMan.departmentGet(equipment.departmentId).then((department) => {
         setDepartment(department.name);
       });

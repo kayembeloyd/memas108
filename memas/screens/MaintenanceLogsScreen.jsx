@@ -91,7 +91,6 @@ export default function MaintenanceLogsScreen({ navigation }) {
 
           currentPage.current += 1;
 
-          console.log("sorted", sorted);
           setSortedMaintenanceLogs(sorted);
         }
       );
