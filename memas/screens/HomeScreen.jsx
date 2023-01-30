@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Alert } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, View, ScrollView, Alert, Text } from "react-native";
 
 import { getHeaderTitle } from "@react-navigation/elements";
 import ScanBottomSheet from "../components/appcomponents/ScanBottomSheet";
@@ -9,6 +9,8 @@ import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 
 export default function HomeScreen({ navigation }) {
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
+
+  const scanBottomSheetRef = useRef(null);
 
   useEffect(() => {
     return navigation.addListener("focus", () => {
@@ -68,14 +70,18 @@ export default function HomeScreen({ navigation }) {
               text="Preventive Maintenance"
               style={styles.mainNavigationButton}
               onPress={() => {
-                navigation.navigate("AddMaintenanceLogScreen");
+                scanBottomSheetRef.current
+                  ? scanBottomSheetRef.current.openSheet()
+                  : null;
               }}
               image={"preventive-maintenance"}
             />
             <MainNavigationButton
               text={"Corrective Maintenance"}
               onPress={() => {
-                navigation.navigate("AddMaintenanceLogScreen");
+                scanBottomSheetRef.current
+                  ? scanBottomSheetRef.current.openSheet()
+                  : null;
               }}
               image={"corrective-maintenance"}
             />
@@ -104,10 +110,12 @@ export default function HomeScreen({ navigation }) {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "transparent",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
         }}
       >
-        <ScanBottomSheet />
+        <ScanBottomSheet ref={scanBottomSheetRef} navigation={navigation} />
       </View>
     </View>
   );

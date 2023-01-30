@@ -152,6 +152,7 @@ export default function EquipmentScreen({ navigation, route }) {
       />
 
       <BigList
+        style={{ marginBottom: 42 }}
         renderHeader={renderHeader}
         headerHeight={50}
         stickyHeaderIndices={[0]}
@@ -168,10 +169,12 @@ export default function EquipmentScreen({ navigation, route }) {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "transparent",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
         }}
       >
-        <ScanBottomSheet />
+        <ScanBottomSheet navigation={navigation} />
       </View>
     </View>
   );

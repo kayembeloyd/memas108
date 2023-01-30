@@ -158,6 +158,7 @@ export default function MaintenanceScheduleScreen({ navigation }) {
       />
 
       <BigList
+        style={{ marginBottom: 42 }}
         renderHeader={renderHeader}
         headerHeight={50}
         sections={sortedMaintenanceSchedules}
@@ -210,10 +211,12 @@ export default function MaintenanceScheduleScreen({ navigation }) {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backfaceVisibility: "rgba(0, 0, 0, 0)",
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
         }}
       >
-        <ScanBottomSheet />
+        <ScanBottomSheet navigation={navigation} />
       </View>
     </View>
   );

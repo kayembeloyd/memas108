@@ -18,6 +18,23 @@ export default class MiddleMan {
     return await iasync(page, size);
   }
 
+  static async equipmentGet(assetTag) {
+    const iasync = async (assetTag) => {
+      try {
+        const response = await fetch(
+          this.API_ADDRESS + "/equipment/" + assetTag
+        );
+
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    };
+
+    return await iasync(assetTag);
+  }
+
   static async equipmentNew(equipment) {
     const iasync = async (item) => {
       try {
@@ -43,7 +60,7 @@ export default class MiddleMan {
 
     return await iasync(equipment);
   }
-
+  W;
   static async equipmentUpdate(equipment) {
     const iasync = async (item) => {
       try {
