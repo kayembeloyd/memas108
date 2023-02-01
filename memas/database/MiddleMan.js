@@ -192,6 +192,30 @@ export default class MiddleMan {
     return await iasync(page, size);
   }
 
+  static async maintenanceOverdueSchedule(page, size, nowDate) {
+    const iasync = async (page, size) => {
+      try {
+        const response = await fetch(
+          this.API_ADDRESS +
+            "/maintenance-schedule?page=" +
+            page +
+            "&size=" +
+            size +
+            "&nowDate=" +
+            nowDate +
+            "&overdue=true"
+        );
+
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    };
+
+    return await iasync(page, size);
+  }
+
   static async userGet(id) {
     const iasync = async (id) => {
       return {

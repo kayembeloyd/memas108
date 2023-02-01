@@ -15,6 +15,7 @@ import MiddleMan from "../database/MiddleMan";
 export default function EquipmentScreen({ navigation, route }) {
   const equipmentPage = useRef(1);
   const canLoadMore = useRef(true);
+  const isLoading = useRef(false);
   const [equipment, setEquipment] = useState([]);
 
   const [departments, setDepartments] = useState([{ id: 1 }, { id: 2 }]);
@@ -76,6 +77,28 @@ export default function EquipmentScreen({ navigation, route }) {
       : null;
   };
 
+  const loadMore = () => {
+    if (!isLoading.current) {
+      if (canLoadMore.current) {
+        isLoading.current = true;
+        MiddleMan.equipment(equipmentPage.current, 10).then((equipment) => {
+          isLoading.current = false;
+          canLoadMore.current = equipment.length > 0;
+
+          setEquipment((oldState) => {
+            const newState = [...oldState];
+            for (const e of equipment) {
+              newState.push(e);
+            }
+
+            equipmentPage.current += 1;
+            return newState;
+          });
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
@@ -96,21 +119,7 @@ export default function EquipmentScreen({ navigation, route }) {
         },
       });
 
-      if (canLoadMore.current) {
-        MiddleMan.equipment(equipmentPage.current, 10).then((equipment) => {
-          canLoadMore.current = equipment.length > 0;
-
-          setEquipment((oldState) => {
-            const newState = [...oldState];
-            for (const e of equipment) {
-              newState.push(e);
-            }
-
-            equipmentPage.current += 1;
-            return newState;
-          });
-        });
-      }
+      loadMore();
     });
   }, [navigation]);
 
@@ -163,6 +172,10 @@ export default function EquipmentScreen({ navigation, route }) {
         placeholder={true}
         placeholderComponent={renderPlaceHolder}
         itemHeight={100}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          loadMore();
+        }}
       />
 
       <View

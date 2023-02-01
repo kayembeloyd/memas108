@@ -15,6 +15,7 @@ import MiddleMan from "../database/MiddleMan";
 export default function MaintenanceLogsScreen({ navigation }) {
   const currentPage = useRef(1);
   const canLoadMore = useRef(true);
+  const isLoading = useRef(false);
   const maintenanceLogs = useRef([]);
   const maintenanceLogDateSections = useRef([]);
   const [sortedMaintenanceLogs, setSortedMaintenanceLogs] = useState([]);
@@ -57,43 +58,46 @@ export default function MaintenanceLogsScreen({ navigation }) {
     </View>
   );
   const loadMore = () => {
-    if (canLoadMore.current) {
-      MiddleMan.maintenanceLogs(currentPage.current, 4).then(
-        (newMaintenanceLogs) => {
-          canLoadMore.current = newMaintenanceLogs.length > 0;
+    if (!isLoading.current) {
+      if (canLoadMore.current) {
+        MiddleMan.maintenanceLogs(currentPage.current, 4).then(
+          (newMaintenanceLogs) => {
+            isLoading.current = false;
+            canLoadMore.current = newMaintenanceLogs.length > 0;
 
-          var sorted = [];
-          var toSort = [...maintenanceLogs.current, ...newMaintenanceLogs];
+            var sorted = [];
+            var toSort = [...maintenanceLogs.current, ...newMaintenanceLogs];
 
-          for (const ml of toSort) {
-            !maintenanceLogDateSections.current.find((o) => o.date == ml.date)
-              ? maintenanceLogDateSections.current.push({
-                  index: maintenanceLogDateSections.current.length,
-                  date: ml.date,
-                })
-              : null;
+            for (const ml of toSort) {
+              !maintenanceLogDateSections.current.find((o) => o.date == ml.date)
+                ? maintenanceLogDateSections.current.push({
+                    index: maintenanceLogDateSections.current.length,
+                    date: ml.date,
+                  })
+                : null;
+            }
+
+            for (const mlds of maintenanceLogDateSections.current)
+              sorted.push([]);
+
+            for (const ml of toSort) {
+              const mlds = maintenanceLogDateSections.current.find(
+                (o) => o.date == ml.date
+              );
+              mlds ? sorted[mlds.index].push(ml) : null;
+            }
+
+            maintenanceLogs.current = [
+              ...maintenanceLogs.current,
+              ...newMaintenanceLogs,
+            ];
+
+            currentPage.current += 1;
+
+            setSortedMaintenanceLogs(sorted);
           }
-
-          for (const mlds of maintenanceLogDateSections.current)
-            sorted.push([]);
-
-          for (const ml of toSort) {
-            const mlds = maintenanceLogDateSections.current.find(
-              (o) => o.date == ml.date
-            );
-            mlds ? sorted[mlds.index].push(ml) : null;
-          }
-
-          maintenanceLogs.current = [
-            ...maintenanceLogs.current,
-            ...newMaintenanceLogs,
-          ];
-
-          currentPage.current += 1;
-
-          setSortedMaintenanceLogs(sorted);
-        }
-      );
+        );
+      }
     }
   };
 
@@ -156,6 +160,9 @@ export default function MaintenanceLogsScreen({ navigation }) {
         itemHeight={150}
         placeholder={true}
         placeholderComponent={renderPlaceHolder}
+        onEndReached={() => {
+          loadMore();
+        }}
       />
 
       <View

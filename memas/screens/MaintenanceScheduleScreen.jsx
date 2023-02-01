@@ -11,10 +11,15 @@ import TopAppBarWithSearchbar from "../components/appcomponents/TopAppBar/TopApp
 import MaintenanceScheduleItem from "../components/appcomponents/MaintenanceScheduleItem";
 import MiddleMan from "../database/MiddleMan";
 import Helper from "../components/uicomponents/MemasCalendar/helpers/Helper";
+import Icons from "../assets/icons/Icons";
+import { TouchableOpacity } from "react-native";
 
 export default function MaintenanceScheduleScreen({ navigation }) {
   const maintenanceSchedulesPage = useRef(1);
+  const maintenanceOverdueSchedulesPage = useRef(1);
   const canLoadMore = useRef(true);
+  const canLoadMoreOverdueSchedules = useRef(true);
+  const isLoading = useRef(false);
   const maintenanceSchedules = useRef([]);
   const maintenanceScheduleDateSections = useRef([]);
   const [sortedMaintenanceSchedules, setSortedMaintenanceSchedules] = useState(
@@ -23,6 +28,8 @@ export default function MaintenanceScheduleScreen({ navigation }) {
 
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const { height, width } = useWindowDimensions();
+
+  const [refreshButtonTopPosition, setRefreshButtonTopPosition] = useState(70);
 
   const getFormattedDate2 = (date) => {
     return (
@@ -70,32 +77,69 @@ export default function MaintenanceScheduleScreen({ navigation }) {
     </View>
   );
 
-  useEffect(() => {
-    return navigation.addListener("focus", () => {
-      setProfileModalVisibility(false);
+  const loadMoreOverdueSchedules = () => {
+    if (!isLoading.current) {
+      if (canLoadMoreOverdueSchedules.current) {
+        MiddleMan.maintenanceOverdueSchedule(
+          maintenanceOverdueSchedulesPage.current,
+          10,
+          getFormattedDate2(new Date())
+        ).then((newMaintenanceSchedules) => {
+          isLoading.current = false;
+          canLoadMoreOverdueSchedules.current =
+            newMaintenanceSchedules.length > 0;
 
-      navigation.setOptions({
-        header: ({ navigation, route, options, back }) => {
-          const title = getHeaderTitle(options, route.name);
-          return (
-            <TopAppBarWithSearchbar
-              title={title}
-              back={back}
-              navigation={navigation}
-              profileOnPress={() => {
-                setProfileModalVisibility(true);
-              }}
-            />
-          );
-        },
-      });
+          var sorted = [];
+          var toSort = [
+            ...newMaintenanceSchedules,
+            ...maintenanceSchedules.current,
+          ];
 
+          maintenanceScheduleDateSections.current = [];
+
+          for (const ms of toSort) {
+            !maintenanceScheduleDateSections.current.find(
+              (o) => o.date == ms.nextMaintenanceDate
+            )
+              ? maintenanceScheduleDateSections.current.push({
+                  index: maintenanceScheduleDateSections.current.length,
+                  date: ms.nextMaintenanceDate,
+                })
+              : null;
+          }
+
+          for (const msds of maintenanceScheduleDateSections.current)
+            sorted.push([]);
+
+          for (const ms of toSort) {
+            const msds = maintenanceScheduleDateSections.current.find(
+              (o) => o.date == ms.nextMaintenanceDate
+            );
+            msds ? sorted[msds.index].push(ms) : null;
+          }
+
+          maintenanceSchedules.current = [
+            ...newMaintenanceSchedules,
+            ...maintenanceSchedules.current,
+          ];
+
+          maintenanceOverdueSchedulesPage.current += 1;
+
+          setSortedMaintenanceSchedules(sorted);
+        });
+      }
+    }
+  };
+
+  const loadMore = () => {
+    if (!isLoading.current) {
       if (canLoadMore.current) {
         MiddleMan.maintenanceSchedule(
           maintenanceSchedulesPage.current,
           10,
           getFormattedDate2(new Date())
         ).then((newMaintenanceSchedules) => {
+          isLoading.current = false;
           canLoadMore.current = newMaintenanceSchedules.length > 0;
 
           var sorted = [];
@@ -103,6 +147,8 @@ export default function MaintenanceScheduleScreen({ navigation }) {
             ...maintenanceSchedules.current,
             ...newMaintenanceSchedules,
           ];
+
+          maintenanceScheduleDateSections.current = [];
 
           for (const ms of toSort) {
             !maintenanceScheduleDateSections.current.find(
@@ -135,6 +181,30 @@ export default function MaintenanceScheduleScreen({ navigation }) {
           setSortedMaintenanceSchedules(sorted);
         });
       }
+    }
+  };
+
+  useEffect(() => {
+    return navigation.addListener("focus", () => {
+      setProfileModalVisibility(false);
+
+      navigation.setOptions({
+        header: ({ navigation, route, options, back }) => {
+          const title = getHeaderTitle(options, route.name);
+          return (
+            <TopAppBarWithSearchbar
+              title={title}
+              back={back}
+              navigation={navigation}
+              profileOnPress={() => {
+                setProfileModalVisibility(true);
+              }}
+            />
+          );
+        },
+      });
+
+      loadMore();
     });
   }, [navigation]);
 
@@ -156,6 +226,24 @@ export default function MaintenanceScheduleScreen({ navigation }) {
           navigation.navigate("AddEquipmentScreen");
         }}
       />
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#4CAF50",
+          borderRadius: 10,
+          padding: 5,
+          position: "absolute",
+          top: refreshButtonTopPosition /* 70 - 20 */,
+          zIndex: 100,
+          right: 30,
+          flex: 1,
+        }}
+        onPress={() => {
+          loadMoreOverdueSchedules();
+        }}
+      >
+        <Icons name="overdue" />
+      </TouchableOpacity>
 
       <BigList
         style={{ marginBottom: 42 }}
@@ -205,6 +293,20 @@ export default function MaintenanceScheduleScreen({ navigation }) {
         itemHeight={73}
         placeholder={true}
         placeholderComponent={renderPlaceHolder}
+        onEndReached={() => {
+          loadMore();
+        }}
+        onScroll={(e) => {
+          const offset = e.nativeEvent.contentOffset.y;
+
+          setRefreshButtonTopPosition((oldState) => {
+            if (offset <= 0) return 70;
+
+            if (oldState - offset < 20) return 20;
+
+            return 70;
+          });
+        }}
       />
 
       <View

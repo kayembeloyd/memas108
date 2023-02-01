@@ -22,7 +22,10 @@ export default function MaintenanceScheduleItem({ style, onPress, equipment }) {
       style={[
         style,
         {
-          backgroundColor: "#AFDBB1",
+          backgroundColor:
+            new Date(equipment.nextMaintenanceDate) >= new Date()
+              ? "#AFDBB1"
+              : "#F7EDED",
           height: 68,
           marginBottom: 5,
           marginTop: 5,

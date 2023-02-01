@@ -15,6 +15,7 @@ import {
   View,
   Platform,
   ScrollView,
+  BackHandler,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import TextInputUI from "../uicomponents/TextInputUI";
@@ -46,6 +47,20 @@ export default forwardRef(function ScanBottomSheet({ navigation }, ref) {
 
   const { height } = useWindowDimensions();
   const sheetAnim = useRef(new Animated.Value(42)).current;
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (isSheetVisible) {
+          closeSheet();
+          return true;
+        } else false;
+      }
+    );
+
+    return () => backHandler.remove();
+  });
 
   useEffect(() => {
     const getCameraPermissions = async () => {
