@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Text, useWindowDimensions } from "react-native";
 import { StyleSheet, View } from "react-native";
+
 import BigList from "react-native-big-list";
 import EquipmentItem from "../components/appcomponents/EquipmentItem";
 import FilterBar from "../components/appcomponents/FilterBar/FilterBar";
@@ -18,11 +19,25 @@ export default function EquipmentScreen({ navigation, route }) {
   const isLoading = useRef(false);
   const [equipment, setEquipment] = useState([]);
 
-  const [departments, setDepartments] = useState([{ id: 1 }, { id: 2 }]);
+  const filteringOptions = useRef({
+    department: { id: 0, name: "All", uploaded: 0 },
+    search: "",
+    status: { id: 0, name: "All" },
+    make: "All",
+    model: "All",
+  });
+
+  const [departments, setDepartments] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedMake, setSelectedMake] = useState("All");
+  const [selectedModel, setSelectedModel] = useState("All");
 
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
   const [departmentsModalVisibility, setDepartmentsModalVisibility] =
     useState(false);
+  const [statusModalVisibility, setStatusModalVisibility] = useState(false);
 
   const { height, width } = useWindowDimensions();
 
@@ -51,12 +66,16 @@ export default function EquipmentScreen({ navigation, route }) {
     >
       <FilterBarItem
         title="Department"
-        value="All"
+        value={selectedDepartment}
         onPress={() => setDepartmentsModalVisibility(true)}
       />
-      <FilterBarItem title="Status" value="All" />
-      <FilterBarItem title="Make" value="All" />
-      <FilterBarItem title="Model" value="All" />
+      <FilterBarItem
+        title="Status"
+        value={selectedStatus}
+        onPress={() => setStatusModalVisibility(true)}
+      />
+      <FilterBarItem title="Make" value={selectedMake} />
+      <FilterBarItem title="Model" value={selectedModel} />
     </FilterBar>
   );
   const renderPlaceHolder = () => (
@@ -77,11 +96,27 @@ export default function EquipmentScreen({ navigation, route }) {
       : null;
   };
 
+  const refreshEquipment = () => {
+    equipmentPage.current = 1;
+    canLoadMore.current = true;
+    isLoading.current = false;
+
+    setEquipment([]);
+    loadMore();
+  };
+
   const loadMore = () => {
     if (!isLoading.current) {
       if (canLoadMore.current) {
         isLoading.current = true;
-        MiddleMan.equipment(equipmentPage.current, 10).then((equipment) => {
+        console.log("Loading Equipment...");
+        console.log("Current filters: ", filteringOptions.current);
+
+        MiddleMan.equipment(
+          equipmentPage.current,
+          10,
+          filteringOptions.current
+        ).then((equipment) => {
           isLoading.current = false;
           canLoadMore.current = equipment.length > 0;
 
@@ -94,9 +129,27 @@ export default function EquipmentScreen({ navigation, route }) {
             equipmentPage.current += 1;
             return newState;
           });
+
+          console.log("Equipment Loaded");
         });
       }
     }
+  };
+
+  const loadDepartments = () => {
+    MiddleMan.departments().then((depts) => {
+      setDepartments((oldState) => {
+        return [{ id: 0, name: "All", uploaded: 0 }, , ...depts];
+      });
+    });
+  };
+
+  const loadStatuses = () => {
+    MiddleMan.statuses().then((stss) => {
+      setStatuses((oldState) => {
+        return [{ id: 0, name: "All", uploaded: 0 }, , ...stss];
+      });
+    });
   };
 
   useEffect(() => {
@@ -114,10 +167,20 @@ export default function EquipmentScreen({ navigation, route }) {
               profileOnPress={() => {
                 setProfileModalVisibility(true);
               }}
+              onSubmitEditing={(e) => {
+                filteringOptions.current.search = e.nativeEvent.text;
+
+                // Load equipment
+                refreshEquipment();
+              }}
             />
           );
         },
       });
+
+      loadStatuses();
+
+      loadDepartments();
 
       loadMore();
     });
@@ -131,6 +194,32 @@ export default function EquipmentScreen({ navigation, route }) {
       }}
     >
       <GenericModalScreen
+        visible={statusModalVisibility}
+        onRequestClose={() => {
+          setStatusModalVisibility(false);
+        }}
+        actionButtonsComponent={() => <></>}
+      >
+        {statuses.map((status) => {
+          return (
+            <ListItemButton
+              key={status.id}
+              text={status.name}
+              style={{ marginHorizontal: 5, marginVertical: 2 }}
+              onPress={() => {
+                setSelectedStatus(status.name);
+                filteringOptions.current.status = status;
+                setStatusModalVisibility(false);
+
+                // Load equipment
+                refreshEquipment();
+              }}
+            />
+          );
+        })}
+      </GenericModalScreen>
+
+      <GenericModalScreen
         visible={departmentsModalVisibility}
         onRequestClose={() => {
           setDepartmentsModalVisibility(false);
@@ -141,9 +230,16 @@ export default function EquipmentScreen({ navigation, route }) {
           return (
             <ListItemButton
               key={department.id}
-              text={"Department " + department.id}
+              text={department.name}
               style={{ marginHorizontal: 5, marginVertical: 2 }}
-              onPress={() => setDepartmentsModalVisibility(false)}
+              onPress={() => {
+                setSelectedDepartment(department.name);
+                filteringOptions.current.department = department;
+                setDepartmentsModalVisibility(false);
+
+                // Load equipment
+                refreshEquipment();
+              }}
             />
           );
         })}

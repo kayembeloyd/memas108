@@ -1,11 +1,34 @@
 export default class MiddleMan {
   static API_ADDRESS = "http://192.168.0.39/memas108api";
 
-  static async equipment(page, size) {
+  static async equipment(page, size, filteringOptions) {
     const iasync = async (page, size) => {
       try {
+        var filter = "";
+
+        filter += "&search=" + filteringOptions.search;
+        filter +=
+          "&department=" +
+          (filteringOptions.department.id == 0
+            ? ""
+            : filteringOptions.department.id);
+        filter +=
+          "&status=" +
+          (filteringOptions.status.id == 0 ? "" : filteringOptions.status.id);
+        filter +=
+          "&make=" +
+          (filteringOptions.make == "All" ? "" : filteringOptions.make);
+        filter +=
+          "&make=" +
+          (filteringOptions.model == "All" ? "" : filteringOptions.model);
+
         const response = await fetch(
-          this.API_ADDRESS + "/equipment?page=" + page + "&size=" + size
+          this.API_ADDRESS +
+            "/equipment?page=" +
+            page +
+            "&size=" +
+            size +
+            filter
         );
 
         return await response.json();
@@ -120,6 +143,30 @@ export default class MiddleMan {
 
       return departments.find((department) => {
         return department.id == id;
+      });
+    };
+
+    return iasync(id);
+  }
+
+  static async statuses() {
+    const iasync = async () => {
+      return [
+        { id: 1, name: "Working", uploaded: 0 },
+        { id: 2, name: "Faulty", uploaded: 0 },
+        { id: 3, name: "Idle", uploaded: 0 },
+      ];
+    };
+
+    return await iasync();
+  }
+
+  static async statusesGet(id) {
+    const iasync = async (id) => {
+      const statuses = await this.statuses();
+
+      return statuses.find((status) => {
+        return status.id == id;
       });
     };
 

@@ -14,6 +14,7 @@ export default function TopAppBarWithSearchbar({
   title,
   back,
   profileOnPress,
+  onSubmitEditing,
 }) {
   return (
     <View
@@ -57,6 +58,7 @@ export default function TopAppBarWithSearchbar({
             paddingStart: 10,
             flex: 1,
           }}
+          onSubmitEditing={onSubmitEditing}
         />
 
         <TouchableOpacity onPress={profileOnPress}>
