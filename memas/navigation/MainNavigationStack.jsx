@@ -41,6 +41,13 @@ export default function MainNavigationStack({ navigation }) {
       }}
     >
       <stackNavigator.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{
+          header: () => null,
+        }}
+      />
+      <stackNavigator.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{

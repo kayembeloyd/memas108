@@ -13,6 +13,7 @@ export default function TextInputUI({
   value,
   onPress,
   onClearPress,
+  secureTextEntry,
 }) {
   const ICON_WIDTH = 42;
   const BORDER_WIDTH = 2;
@@ -59,8 +60,11 @@ export default function TextInputUI({
           <View
             style={{
               flexDirection: "row",
-              backgroundColor: "red",
+              backgroundColor: "#388E3C",
               justifyContent: "center",
+              borderRadius: 4,
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
               width: 42,
             }}
           >
@@ -101,6 +105,7 @@ export default function TextInputUI({
             placeholder={hint}
             onChangeText={onChangeText}
             style={{ paddingHorizontal: 10, paddingVertical: 8, flex: 1 }}
+            secureTextEntry={secureTextEntry}
           />
         )}
       </View>

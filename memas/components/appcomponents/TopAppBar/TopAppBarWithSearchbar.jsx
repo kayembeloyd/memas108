@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from "react-native";
 import Icons from "../../../assets/icons/Icons";
 
@@ -59,6 +60,8 @@ export default function TopAppBarWithSearchbar({
             flex: 1,
           }}
           onSubmitEditing={onSubmitEditing}
+          returnKeyType="search"
+          inputMode="search"
         />
 
         <TouchableOpacity onPress={profileOnPress}>
