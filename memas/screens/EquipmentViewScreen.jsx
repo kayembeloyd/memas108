@@ -21,14 +21,29 @@ export default function EquipmentViewScreen({ navigation, route }) {
   const [statusModalVisibility, setStatusModalVisibility] = useState(false);
   const [calendarModalVisibility, setCalendarModalVisibility] = useState(false);
 
+  const [statuses, setStatuses] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(0);
+
   const tEquipment = useRef({ ...equipment });
   const runOnce = useRef(true);
+
+  const loadStatuses = () => {
+    MiddleMan.statuses().then((stss) => {
+      setStatuses((oldState) => {
+        return [...stss];
+      });
+    });
+  };
 
   useEffect(() => {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
       setStatusModalVisibility(false);
       setCalendarModalVisibility(false);
+
+      setEquipment((oldState) => {
+        return { ...oldState, equipmentStatusText: "Not Set" };
+      });
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {
@@ -64,8 +79,18 @@ export default function EquipmentViewScreen({ navigation, route }) {
           };
         });
 
+        equipment.statusOptionId != 0
+          ? MiddleMan.statusesGet(equipment.statusOptionId).then((status) => {
+              setEquipment((oldState) => {
+                return { ...oldState, equipmentStatusText: status.name };
+              });
+            })
+          : null;
+
         runOnce.current = false;
       }
+
+      loadStatuses();
     });
   }, [navigation]);
 
@@ -115,6 +140,31 @@ export default function EquipmentViewScreen({ navigation, route }) {
               style={{ marginRight: 10, marginBottom: 10 }}
               text="Save"
               onPress={() => {
+                // Save equipment
+                setEquipment((oldState) => {
+                  const updateEquipment = {
+                    ...oldState,
+                    statusOptionId: selectedStatus + 1,
+                  };
+
+                  tEquipment.current = {
+                    ...tEquipment.current,
+                    statusOptionId: selectedStatus + 1,
+                  };
+
+                  MiddleMan.equipmentUpdate(updateEquipment).then(
+                    (response) => null
+                  );
+
+                  return updateEquipment;
+                });
+
+                MiddleMan.statusesGet(selectedStatus + 1).then((status) => {
+                  setEquipment((oldState) => {
+                    return { ...oldState, equipmentStatusText: status.name };
+                  });
+                });
+
                 setStatusModalVisibility(false);
               }}
             />
@@ -131,7 +181,15 @@ export default function EquipmentViewScreen({ navigation, route }) {
         >
           Click to change status
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedStatus((oldState) => {
+              if (oldState + 1 >= statuses.length) return 0;
+
+              return oldState + 1;
+            });
+          }}
+        >
           <View
             style={{
               margin: 10,
@@ -143,7 +201,9 @@ export default function EquipmentViewScreen({ navigation, route }) {
             <Text
               style={{ paddingHorizontal: 10, fontSize: 18, fontWeight: "400" }}
             >
-              Working
+              {statuses.length > 0
+                ? statuses[selectedStatus].name
+                : "loading..."}
             </Text>
           </View>
         </TouchableOpacity>
@@ -270,7 +330,9 @@ export default function EquipmentViewScreen({ navigation, route }) {
         <InfoItem
           name={"Equipment Status:"}
           value={
-            equipment.statusOptionId == 0 ? "Not Set" : equipment.statusOptionId
+            equipment.statusOptionId == 0
+              ? "Not Set"
+              : equipment.equipmentStatusText
           }
         />
       </CardUI>

@@ -109,8 +109,6 @@ export default function EquipmentScreen({ navigation, route }) {
     if (!isLoading.current) {
       if (canLoadMore.current) {
         isLoading.current = true;
-        console.log("Loading Equipment...");
-        console.log("Current filters: ", filteringOptions.current);
 
         MiddleMan.equipment(
           equipmentPage.current,
@@ -129,8 +127,6 @@ export default function EquipmentScreen({ navigation, route }) {
             equipmentPage.current += 1;
             return newState;
           });
-
-          console.log("Equipment Loaded");
         });
       }
     }
@@ -147,7 +143,7 @@ export default function EquipmentScreen({ navigation, route }) {
   const loadStatuses = () => {
     MiddleMan.statuses().then((stss) => {
       setStatuses((oldState) => {
-        return [{ id: 0, name: "All", uploaded: 0 }, , ...stss];
+        return [{ id: 0, name: "All", uploaded: 0 }, ...stss];
       });
     });
   };
