@@ -156,6 +156,7 @@ export default function EquipmentScreen({ navigation, route }) {
     return navigation.addListener("focus", () => {
       setProfileModalVisibility(false);
       setDepartmentsModalVisibility(false);
+      setStatusModalVisibility(false);
 
       navigation.setOptions({
         header: ({ navigation, route, options, back }) => {

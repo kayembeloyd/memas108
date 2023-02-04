@@ -85,6 +85,7 @@ export default function MainNavigationStack({ navigation }) {
       <stackNavigator.Screen
         name="MaintenanceLogsScreen"
         component={MaintenanceLogsScreen}
+        initialParams={{ filterEquipment: { id: 0 } }}
         options={{
           header: ({ navigation, route, options, back }) => {
             const title = getHeaderTitle(options, route.name);

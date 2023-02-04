@@ -280,7 +280,9 @@ export default function EquipmentViewScreen({ navigation, route }) {
           style={styles.buttonStyle}
           text={"Maintenance Logs"}
           onPress={() => {
-            navigation.navigate("MaintenanceLogsScreen");
+            navigation.navigate("MaintenanceLogsScreen", {
+              filterEquipment: equipment,
+            });
           }}
         />
         <DefaultButton

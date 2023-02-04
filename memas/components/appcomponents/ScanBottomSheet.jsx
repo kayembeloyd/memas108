@@ -44,6 +44,7 @@ export default forwardRef(function ScanBottomSheet({ navigation }, ref) {
   }
 
   const [isSheetVisible, setSheetVisibility] = useState(false);
+  const [manualCode, setManualCode] = useState("");
 
   const { height } = useWindowDimensions();
   const sheetAnim = useRef(new Animated.Value(42)).current;
@@ -217,6 +218,9 @@ export default forwardRef(function ScanBottomSheet({ navigation }, ref) {
               marginHorizontal: 10,
             }}
             hint="Machine code"
+            onChangeText={(e) => {
+              setManualCode(e);
+            }}
           />
         ) : (
           <></>
@@ -231,6 +235,15 @@ export default forwardRef(function ScanBottomSheet({ navigation }, ref) {
                 maxWidth: 700,
               }}
               text={"Ok"}
+              onPress={() => {
+                closeSheet();
+                MiddleMan.equipmentGet(manualCode).then((equipment) => {
+                  navigation.navigate("EquipmentViewScreen", {
+                    equipment: equipment,
+                    updateParent: updatedEquipment,
+                  });
+                });
+              }}
             />
           </View>
         ) : (

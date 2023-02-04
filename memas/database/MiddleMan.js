@@ -83,7 +83,7 @@ export default class MiddleMan {
 
     return await iasync(equipment);
   }
-  W;
+
   static async equipmentUpdate(equipment) {
     const iasync = async (item) => {
       try {
@@ -199,11 +199,39 @@ export default class MiddleMan {
     return await iasync(maintenanceLog);
   }
 
-  static async maintenanceLogs(page, size) {
+  static async maintenanceLogs(page, size, filteringOptions) {
     const iasync = async (page, size) => {
       try {
+        var filter = "";
+
+        filter += "&search=" + filteringOptions.search;
+        filter +=
+          "&department=" +
+          (filteringOptions.department.id == 0
+            ? ""
+            : filteringOptions.department.id);
+        filter +=
+          "&status=" +
+          (filteringOptions.status.id == 0 ? "" : filteringOptions.status.id);
+        filter +=
+          "&make=" +
+          (filteringOptions.make == "All" ? "" : filteringOptions.make);
+        filter +=
+          "&make=" +
+          (filteringOptions.model == "All" ? "" : filteringOptions.model);
+        filter +=
+          "&equipment=" +
+          (filteringOptions.equipment.id == 0
+            ? ""
+            : filteringOptions.equipment.id);
+
         const response = await fetch(
-          this.API_ADDRESS + "/maintenance-logs?page=" + page + "&size=" + size
+          this.API_ADDRESS +
+            "/maintenance-logs?page=" +
+            page +
+            "&size=" +
+            size +
+            filter
         );
 
         return await response.json();
