@@ -14,8 +14,11 @@ import DateLine from "../components/uicomponents/DateLine";
 import DefaultButton from "../components/uicomponents/DefaultButton";
 import TextInputUI from "../components/uicomponents/TextInputUI";
 import MiddleMan from "../database/MiddleMan";
+import useAuthUser from "../hooks/useAuthUser";
 
 export default function AddMaintenanceLogScreen({ navigation, route }) {
+  const [authUser] = useAuthUser();
+
   const getFormattedDate = (date) => {
     return (
       "" +
@@ -238,10 +241,15 @@ export default function AddMaintenanceLogScreen({ navigation, route }) {
         text={loading ? "Loading..." : "SAVE"}
         onPress={() => {
           if (!loading) {
-            MiddleMan.maintenanceLogNew(maintenanceLog).then((result) => {
-              setLoading(false);
-            });
-            setLoading(true);
+            if (authUser) {
+              MiddleMan.maintenanceLogNew({
+                ...maintenanceLog,
+                doneByUserId: authUser.id,
+              }).then((result) => {
+                setLoading(false);
+              });
+              setLoading(true);
+            }
           }
         }}
       />

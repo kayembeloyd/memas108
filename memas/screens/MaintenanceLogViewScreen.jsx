@@ -34,7 +34,7 @@ export default function MaintenanceLogViewScreen({ navigation, route }) {
         }
       );
 
-      MiddleMan.userGet(0).then((user) => {
+      MiddleMan.userGet(maintenanceLog.doneByUserId).then((user) => {
         setUser(user);
       });
 

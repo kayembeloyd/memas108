@@ -332,13 +332,9 @@ export default class MiddleMan {
 
   static async userGet(id) {
     const iasync = async (id) => {
-      return {
-        id: 0,
-        username: "kayembeloyd",
-        avatarId: 0,
-        name: "Lloyd Kayembe",
-        position: "Biomedical Engineer",
-      };
+      const response = await fetch(this.API_ADDRESS + "/users/" + id);
+
+      return await response.json();
     };
 
     return await iasync(id);
