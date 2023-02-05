@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import TextInputUI from "../components/uicomponents/TextInputUI";
 import DefaultButton from "../components/uicomponents/DefaultButton";
+import MiddleMan from "../database/MiddleMan";
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
   return (
     <View
       style={{
@@ -37,20 +41,59 @@ export default function LoginScreen() {
             style={{ backgroundColor: "white" }}
             hint="username"
             iconName={"profile"}
+            onChangeText={(e) => {
+              setUsername(e);
+            }}
           />
           <TextInputUI
             style={{ backgroundColor: "white" }}
             hint="password"
             iconName={"profile"}
             secureTextEntry={true}
+            onChangeText={(e) => {
+              setPassword(e);
+            }}
           />
         </View>
 
-        <View style={{ width: "50%", alignSelf: "center" }}>
+        <View
+          style={{ width: "90%", alignSelf: "center", flexDirection: "row" }}
+        >
           <DefaultButton
+            style={{ flex: 1 }}
             backgroundColor={"#388E3C"}
             text={"LOGIN"}
             color={"white"}
+            onPress={() => {
+              console.log("username: ", username);
+              console.log("password: ", password);
+
+              MiddleMan.userLogin({
+                username: username,
+                password: password,
+              }).then((isSuccess) => {
+                if (isSuccess) {
+                  navigation.navigate("HomeScreen");
+                } else {
+                  console.log("failed");
+                }
+              });
+            }}
+          />
+          <DefaultButton
+            text={"GUEST"}
+            onPress={() => {
+              MiddleMan.userLogin({
+                username: "guest",
+                password: "guest",
+              }).then((isSuccess) => {
+                if (isSuccess) {
+                  navigation.navigate("HomeScreen");
+                } else {
+                  console.log("failed");
+                }
+              });
+            }}
           />
         </View>
       </View>
@@ -59,6 +102,7 @@ export default function LoginScreen() {
         style={{
           position: "absolute",
           bottom: 5,
+          zIndex: -1,
           alignItems: "center",
         }}
       >

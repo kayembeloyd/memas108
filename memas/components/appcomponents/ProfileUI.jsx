@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 
-export default function ProfileUI({ style }) {
+export default function ProfileUI({ style, name, position }) {
   return (
     <View
       style={[
@@ -17,8 +17,8 @@ export default function ProfileUI({ style }) {
         style={{ width: 66, height: 66, borderRadius: 400 / 2 }}
       />
       <View style={{ marginStart: 10, marginLeft: 10 }}>
-        <Text style={{ fontWeight: "400", fontSize: 16 }}>Lloyd Kayembe</Text>
-        <Text style={{ color: "#737373" }}>Biomedical Engineer</Text>
+        <Text style={{ fontWeight: "400", fontSize: 16 }}>{name}</Text>
+        <Text style={{ color: "#737373" }}>{position}</Text>
       </View>
     </View>
   );

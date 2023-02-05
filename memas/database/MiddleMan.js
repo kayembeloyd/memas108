@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default class MiddleMan {
   static API_ADDRESS = "http://192.168.0.39/memas108api";
 
@@ -289,6 +291,43 @@ export default class MiddleMan {
     };
 
     return await iasync(page, size);
+  }
+
+  static async userLogin(user) {
+    const iasync = async (user) => {
+      try {
+        const response = await fetch(this.API_ADDRESS + "/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          body: new URLSearchParams(user).toString(),
+        });
+
+        const r = await response.json();
+
+        if (r.status === "success") {
+          await AsyncStorage.setItem("user", JSON.stringify(r.user));
+
+          return true;
+        }
+
+        return false;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    };
+
+    return await iasync(user);
+  }
+
+  static async authUser() {
+    const iasync = async () => {
+      return await AsyncStorage.getItem("user");
+    };
+
+    return await iasync();
   }
 
   static async userGet(id) {

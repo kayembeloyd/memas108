@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import {
   StyleSheet,
@@ -11,6 +11,7 @@ import {
 import Icons from "../../assets/icons/Icons";
 import ProfileUI from "../../components/appcomponents/ProfileUI";
 import ListItemButton from "../../components/uicomponents/ListItemButton";
+import MiddleMan from "../../database/MiddleMan";
 
 export default function ProfileModalScreen({
   visible,
@@ -18,6 +19,18 @@ export default function ProfileModalScreen({
   onAddEquipmentPress,
 }) {
   const { height } = useWindowDimensions();
+  const [authuser, setAuthUser] = useState(null);
+  const runOnce = useRef(true);
+
+  useEffect(() => {
+    if (runOnce.current) {
+      MiddleMan.authUser().then((user) => {
+        setAuthUser(JSON.parse(user));
+      });
+
+      runOnce.current = false;
+    }
+  }, []);
 
   return (
     <Modal
@@ -76,15 +89,29 @@ export default function ProfileModalScreen({
               <Text>MEMAS</Text>
             </View>
 
-            <ProfileUI style={{ marginVertical: 10, paddingHorizontal: 10 }} />
+            <ProfileUI
+              style={{ marginVertical: 10, paddingHorizontal: 10 }}
+              name={authuser?.name}
+              position={authuser?.position}
+            />
 
             <ScrollView>
               <View>
-                <ListItemButton
-                  style={styles.listButtonStyle}
-                  text="Add Equipment"
-                  onPress={onAddEquipmentPress}
-                />
+                {authuser ? (
+                  authuser.position == "admin" ||
+                  authuser.position == "user" ? (
+                    <ListItemButton
+                      style={styles.listButtonStyle}
+                      text="Add Equipment"
+                      onPress={onAddEquipmentPress}
+                    />
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )}
+
                 <ListItemButton
                   text="Settings"
                   style={styles.listButtonStyle}
