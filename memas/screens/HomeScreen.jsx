@@ -6,8 +6,11 @@ import ScanBottomSheet from "../components/appcomponents/ScanBottomSheet";
 import MainNavigationButton from "../components/uicomponents/MainNavigationButton";
 import TopAppBarMainCentered from "../components/appcomponents/TopAppBar/TopAppBarMainCentered";
 import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
+import useAuthUser from "../hooks/useAuthUser";
 
 export default function HomeScreen({ navigation }) {
+  const [authUser] = useAuthUser();
+
   const [profileModalVisibility, setProfileModalVisibility] = useState(false);
 
   const scanBottomSheetRef = useRef(null);
@@ -70,7 +73,9 @@ export default function HomeScreen({ navigation }) {
               text="Preventive Maintenance"
               style={styles.mainNavigationButton}
               onPress={() => {
-                scanBottomSheetRef.current
+                authUser?.position == "guest"
+                  ? null
+                  : scanBottomSheetRef.current
                   ? scanBottomSheetRef.current.openSheet()
                   : null;
               }}
@@ -79,7 +84,9 @@ export default function HomeScreen({ navigation }) {
             <MainNavigationButton
               text={"Corrective Maintenance"}
               onPress={() => {
-                scanBottomSheetRef.current
+                authUser?.position == "guest"
+                  ? null
+                  : scanBottomSheetRef.current
                   ? scanBottomSheetRef.current.openSheet()
                   : null;
               }}

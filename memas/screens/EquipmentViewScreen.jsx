@@ -14,6 +14,7 @@ import ProfileModalScreen from "./ModalScreens/ProfileModalScreen";
 import GenericModalScreen from "./ModalScreens/GenericModalScreen";
 import MemasCalendar from "../components/uicomponents/MemasCalendar/MemasCalendar";
 import MiddleMan from "../database/MiddleMan";
+import useAuthUser from "../hooks/useAuthUser";
 
 export default function EquipmentViewScreen({ navigation, route }) {
   const [equipment, setEquipment] = useState({ ...route.params.equipment });
@@ -26,6 +27,8 @@ export default function EquipmentViewScreen({ navigation, route }) {
 
   const tEquipment = useRef({ ...equipment });
   const runOnce = useRef(true);
+
+  const [authUser] = useAuthUser();
 
   const loadStatuses = () => {
     MiddleMan.statuses().then((stss) => {
@@ -347,40 +350,50 @@ export default function EquipmentViewScreen({ navigation, route }) {
             });
           }}
         />
-        <DefaultButton
-          style={styles.buttonStyle}
-          text={"Corrective Maintenance"}
-          backgroundColor={"#CE4949"}
-          color="#fff"
-          onPress={() => {
-            const type = "correctiveMaintenance";
-            navigation.navigate("AddMaintenanceLogScreen", { equipment, type });
-          }}
-        />
-        <DefaultButton
-          style={styles.buttonStyle}
-          text={"Preventive Maintenance"}
-          backgroundColor={"#CE4949"}
-          color="#fff"
-          onPress={() => {
-            const type = "preventiveMaintenance";
-            navigation.navigate("AddMaintenanceLogScreen", { equipment, type });
-          }}
-        />
-        <DefaultButton
-          style={styles.buttonStyle}
-          text={"Set next Service date"}
-          onPress={() => {
-            setCalendarModalVisibility(true);
-          }}
-        />
-        <DefaultButton
-          style={styles.buttonStyle}
-          text={"Equipment Status"}
-          onPress={() => {
-            setStatusModalVisibility(true);
-          }}
-        />
+        {authUser?.position == "guest" ? null : (
+          <>
+            <DefaultButton
+              style={styles.buttonStyle}
+              text={"Corrective Maintenance"}
+              backgroundColor={"#CE4949"}
+              color="#fff"
+              onPress={() => {
+                const type = "correctiveMaintenance";
+                navigation.navigate("AddMaintenanceLogScreen", {
+                  equipment,
+                  type,
+                });
+              }}
+            />
+            <DefaultButton
+              style={styles.buttonStyle}
+              text={"Preventive Maintenance"}
+              backgroundColor={"#CE4949"}
+              color="#fff"
+              onPress={() => {
+                const type = "preventiveMaintenance";
+                navigation.navigate("AddMaintenanceLogScreen", {
+                  equipment,
+                  type,
+                });
+              }}
+            />
+            <DefaultButton
+              style={styles.buttonStyle}
+              text={"Set next Service date"}
+              onPress={() => {
+                setCalendarModalVisibility(true);
+              }}
+            />
+            <DefaultButton
+              style={styles.buttonStyle}
+              text={"Equipment Status"}
+              onPress={() => {
+                setStatusModalVisibility(true);
+              }}
+            />
+          </>
+        )}
       </CardUI>
 
       <CardUI style={styles.cardStyle} titleShown={true} title="Other Info">

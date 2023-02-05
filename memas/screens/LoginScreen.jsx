@@ -65,9 +65,6 @@ export default function LoginScreen({ navigation }) {
             text={"LOGIN"}
             color={"white"}
             onPress={() => {
-              console.log("username: ", username);
-              console.log("password: ", password);
-
               MiddleMan.userLogin({
                 username: username,
                 password: password,

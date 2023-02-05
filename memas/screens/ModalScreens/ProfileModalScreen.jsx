@@ -11,26 +11,16 @@ import {
 import Icons from "../../assets/icons/Icons";
 import ProfileUI from "../../components/appcomponents/ProfileUI";
 import ListItemButton from "../../components/uicomponents/ListItemButton";
-import MiddleMan from "../../database/MiddleMan";
+import useAuthUser from "../../hooks/useAuthUser";
 
 export default function ProfileModalScreen({
   visible,
   onRequestClose,
   onAddEquipmentPress,
+  onSignOutPress,
 }) {
   const { height } = useWindowDimensions();
-  const [authuser, setAuthUser] = useState(null);
-  const runOnce = useRef(true);
-
-  useEffect(() => {
-    if (runOnce.current) {
-      MiddleMan.authUser().then((user) => {
-        setAuthUser(JSON.parse(user));
-      });
-
-      runOnce.current = false;
-    }
-  }, []);
+  const [authuser] = useAuthUser();
 
   return (
     <Modal
