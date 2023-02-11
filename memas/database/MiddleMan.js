@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class MiddleMan {
-  static API_ADDRESS = "http://192.168.0.39/memas108api";
+  static API_ADDRESS = "https://memasapi.000webhostapp.com";
 
   static async equipment(page, size, filteringOptions) {
     const iasync = async (page, size) => {

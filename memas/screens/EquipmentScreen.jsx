@@ -116,17 +116,20 @@ export default function EquipmentScreen({ navigation, route }) {
           filteringOptions.current
         ).then((equipment) => {
           isLoading.current = false;
-          canLoadMore.current = equipment.length > 0;
 
-          setEquipment((oldState) => {
-            const newState = [...oldState];
-            for (const e of equipment) {
-              newState.push(e);
-            }
+          if (equipment) {
+            canLoadMore.current = equipment.length > 0;
 
-            equipmentPage.current += 1;
-            return newState;
-          });
+            setEquipment((oldState) => {
+              const newState = [...oldState];
+              for (const e of equipment) {
+                newState.push(e);
+              }
+
+              equipmentPage.current += 1;
+              return newState;
+            });
+          }
         });
       }
     }
